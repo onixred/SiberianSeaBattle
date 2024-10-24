@@ -8,17 +8,20 @@ import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.library.Architectures;
 import com.tngtech.archunit.library.dependencies.SliceRule;
-import com.tngtech.archunit.library.metrics.*;
+import com.tngtech.archunit.library.metrics.ArchitectureMetrics;
+import com.tngtech.archunit.library.metrics.ComponentDependencyMetrics;
+import com.tngtech.archunit.library.metrics.LakosMetrics;
+import com.tngtech.archunit.library.metrics.MetricsComponents;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.cbr.siberian.sea.battle.acl.GameMapper;
+import ru.cbr.siberian.sea.battle.model.message.MatchUI;
 
 import java.util.Set;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ArchunitTest {
@@ -146,7 +149,7 @@ public class ArchunitTest {
 
 
     @Test
-    void shouldNotUseFieldInjection() {
+    void shouldNotUseFieldInjectionTest() {
         JavaClasses importPackages = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages("ru.cbr.siberian.sea.battle");
@@ -157,7 +160,7 @@ public class ArchunitTest {
     }
 
     @Test
-    void shouldFollowNamingConvention() {
+    void shouldFollowNamingConventionTest() {
         String importPackages = "ru.cbr.siberian.sea.battle";
 
         JavaClasses javaClasses = new ClassFileImporter()
@@ -167,6 +170,19 @@ public class ArchunitTest {
                 .resideInAnyPackage(importPackages + ".acl", importPackages + "acl.*")
                 .should()
                 .haveNameMatching(".*Mapper");
+
+        rule.check(javaClasses);
+    }
+
+    @Test
+    void shouldNotCreateMatchUIInGameMapperTest() {
+        String importPackages = "ru.cbr.siberian.sea.battle";
+
+        JavaClasses javaClasses = new ClassFileImporter()
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                .importPackages(importPackages);
+        ArchRule rule = constructors().that().areDeclaredInClassesThat()
+                .areAssignableTo(MatchUI.class).should().onlyBeCalled().byClassesThat().haveNameNotMatching(GameMapper.class.getName());
 
         rule.check(javaClasses);
     }
