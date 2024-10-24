@@ -39,8 +39,4 @@ public enum Layer {
        return ".." + name().toLowerCase() + "..";
    }
 
-
-    public String getClassName() {
-        return ".*" + name().toLowerCase();
-    }
 }
