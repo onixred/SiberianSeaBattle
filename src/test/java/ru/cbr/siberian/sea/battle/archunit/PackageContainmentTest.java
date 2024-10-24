@@ -35,7 +35,9 @@ public class PackageContainmentTest {
     @Test
     @DisplayName("Проверка в пакете ACL все классы с постфиксом Mapper")
     void GameMapperClassDependencyTest() {
-        JavaClasses importedClasses = new ClassFileImporter().withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS).importPackages("ru.cbr.siberian.sea.battle");
+        JavaClasses importedClasses = new ClassFileImporter()
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                .importPackages("ru.cbr.siberian.sea.battle");
 
         ArchRule rule = classes().that().haveNameMatching(".*Mapper")
                 .should()
