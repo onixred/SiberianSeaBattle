@@ -17,6 +17,7 @@ package ru.cbr.siberian.sea.battle.model.message;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import ru.cbr.siberian.sea.battle.model.enumeration.MatchStatus;
 
 /**
  * Description: Нотификация получение информации поля (для наблюдений)

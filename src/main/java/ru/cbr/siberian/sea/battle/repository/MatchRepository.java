@@ -3,7 +3,7 @@ package ru.cbr.siberian.sea.battle.repository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
-import ru.cbr.siberian.sea.battle.model.message.MatchStatus;
+import ru.cbr.siberian.sea.battle.model.enumeration.MatchStatus;
 import ru.cbr.siberian.sea.battle.dao.MatchDao;
 
 import java.util.List;

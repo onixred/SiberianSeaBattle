@@ -16,6 +16,7 @@
 package ru.cbr.siberian.sea.battle.model.message;
 
 import lombok.Data;
+import ru.cbr.siberian.sea.battle.model.enumeration.Status;
 
 /**
  * Description: Базовое сообщение для ответа

@@ -2,6 +2,7 @@ package ru.cbr.siberian.sea.battle.model.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import ru.cbr.siberian.sea.battle.model.enumeration.MatchStatus;
 
 import java.util.UUID;
 

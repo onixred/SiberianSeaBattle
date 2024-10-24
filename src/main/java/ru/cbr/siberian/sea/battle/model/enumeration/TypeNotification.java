@@ -13,22 +13,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package ru.cbr.siberian.sea.battle.model.message;
+package ru.cbr.siberian.sea.battle.model.enumeration;
 
 /**
- * Description: Статус игры
+ * Description: Типы уведомлений
  *
  * @author <a href="mailto:onixbed@gmail.com">amaksimov</a>
  * crested on 19.09.2024
  */
-public enum MatchStatus {
-    WAIT,
-    IN_PROGRESS,
-
-    IN_PROGRESS_WAIT_FLEET_OWNER,
-    IN_PROGRESS_WAIT_FLEET_OPPONENT,
-    START_GAME,
-    COMPLETED,
-    ALL
-
+public enum TypeNotification {
+    MATCH_WAIT,
+    MATCH_COMPLETED,
+    MATCH_HISTORY,
+    GRIDS_UPDATE;
 }

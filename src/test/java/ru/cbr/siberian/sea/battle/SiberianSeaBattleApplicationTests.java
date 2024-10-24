@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.cbr.siberian.sea.battle.model.Match;
+import ru.cbr.siberian.sea.battle.model.enumeration.MatchStatus;
 import ru.cbr.siberian.sea.battle.model.game.CustomFleet;
 import ru.cbr.siberian.sea.battle.model.game.Fleet;
 import ru.cbr.siberian.sea.battle.model.game.GridPoint;

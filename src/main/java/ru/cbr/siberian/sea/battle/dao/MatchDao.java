@@ -3,7 +3,7 @@ package ru.cbr.siberian.sea.battle.dao;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
-import ru.cbr.siberian.sea.battle.model.message.MatchStatus;
+import ru.cbr.siberian.sea.battle.model.enumeration.MatchStatus;
 
 import java.util.Objects;
 import java.util.UUID;

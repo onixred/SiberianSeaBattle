@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.cbr.siberian.sea.battle.model.message.MatchStatus;
+import ru.cbr.siberian.sea.battle.model.enumeration.MatchStatus;
 
 import java.util.UUID;
 

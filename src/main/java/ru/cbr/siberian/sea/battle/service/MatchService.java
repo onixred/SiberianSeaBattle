@@ -8,7 +8,7 @@ import ru.cbr.siberian.sea.battle.dao.MatchDao;
 import ru.cbr.siberian.sea.battle.dao.PlayerDao;
 import ru.cbr.siberian.sea.battle.model.Match;
 import ru.cbr.siberian.sea.battle.model.Player;
-import ru.cbr.siberian.sea.battle.model.message.MatchStatus;
+import ru.cbr.siberian.sea.battle.model.enumeration.MatchStatus;
 import ru.cbr.siberian.sea.battle.repository.MatchRepository;
 
 import java.util.List;
