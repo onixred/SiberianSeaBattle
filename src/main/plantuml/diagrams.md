@@ -71,6 +71,62 @@ BackgroundColor #white
 ```
 
 ```
+@startuml MatchMapperClassDependencyTest
+hide empty members
+skinparam componentStyle uml2
+
+skinparam component {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+skinparam class {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+class GameService
+class MatchMapper
+
+GameService -> MatchMapper
+note top on link #crimson: forbidden
+
+MatchService --> MatchMapper #green
+note left on link #green: allowed
+@enduml
+```
+
+```
+@startuml GameMapperClassDependencyTest
+hide empty members
+set separator none
+skinparam componentStyle uml2
+
+skinparam component {
+BorderColor #grey
+BackgroundColor #white
+}
+
+skinparam class {
+BorderColor #grey
+BackgroundColor #white
+}
+
+package ru.cbr.siberian.sea.battle.acl {
+class MatchMapper
+class GameMapper
+}
+
+package ru.cbr.siberian.sea.battle.service {
+class MatchService
+}
+
+note "resides in service package" as ServicePackage #crimson
+MatchService .. ServicePackage
+@enduml
+```
+
+```
 @startuml uml
 
 interface ru.cbr.siberian.sea.battle.repository.MatchRepository {
@@ -162,4 +218,34 @@ ArchRule rule = noClasses().that().resideInAPackage(Layer.ACL.getPackageName())
                 Layer.MODEL.getPackageName(),
                 Layer.REPOSITORY.getPackageName());
         rule.check(importedClasses);
+        
+        
+```
+
+### Проверка кто зависит от класса GameMapper
+![asd](/home/mas/IdeaProjects/SiberianSeaBattle2/target/generated-diagrams/MatchMapperClassDependencyTest.svg)
+```java
+JavaClasses importedClasses = new ClassFileImporter()
+        .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+        .importPackages("ru.cbr.siberian.sea.battle");
+ArchRule rule = classes().that().haveNameMatching(MatchMapper.class.getName())
+        .should()
+        .onlyHaveDependentClassesThat().haveNameMatching(MatchService.class.getName());
+
+rule.check(importedClasses);
+```
+
+
+###  Проверка в пакете ACL все классы с постфиксом Mapper
+![asd](/home/mas/IdeaProjects/SiberianSeaBattle2/target/generated-diagrams/GameMapperClassDependencyTest.svg)
+```java
+JavaClasses importedClasses = new ClassFileImporter()
+        .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+        .importPackages("ru.cbr.siberian.sea.battle");
+
+ArchRule rule = classes().that().haveNameMatching(".*Mapper")
+        .should()
+        .resideInAPackage(Layer.ACL.getPackageName());
+
+rule.check(importedClasses);
 ```

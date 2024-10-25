@@ -21,8 +21,8 @@ import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.cbr.siberian.sea.battle.acl.GameMapper;
-import ru.cbr.siberian.sea.battle.service.SeaBattleService;
+import ru.cbr.siberian.sea.battle.acl.MatchMapper;
+import ru.cbr.siberian.sea.battle.service.MatchService;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 
@@ -36,13 +36,13 @@ public class ClassDependencyTest {
 
     @Test
     @DisplayName("Проверка кто зависит от класса GameMapper")
-    void GameMapperClassDependencyTest() {
+    void MatchMapperClassDependencyTest() {
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages("ru.cbr.siberian.sea.battle");
-        ArchRule rule = classes().that().haveNameMatching(GameMapper.class.getName())
+        ArchRule rule = classes().that().haveNameMatching(MatchMapper.class.getName())
                 .should()
-                .onlyHaveDependentClassesThat().haveNameMatching(SeaBattleService.class.getName());
+                .onlyHaveDependentClassesThat().haveNameMatching(MatchService.class.getName());
 
         rule.check(importedClasses);
     }
