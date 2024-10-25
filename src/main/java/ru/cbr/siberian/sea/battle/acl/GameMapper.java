@@ -15,7 +15,7 @@
  */
 package ru.cbr.siberian.sea.battle.acl;
 
-import lombok.experimental.UtilityClass;
+import org.springframework.stereotype.Component;
 import ru.cbr.siberian.sea.battle.model.game.GridPoint;
 import ru.cbr.siberian.sea.battle.model.game.Point;
 import ru.cbr.siberian.sea.battle.model.game.Warship;
@@ -28,7 +28,7 @@ import java.util.Optional;
  * @author <a href="mailto:onixbed@gmail.com">amaksimov</a>
  * crested on 15.09.2024
  */
-@UtilityClass
+@Component
 public class GameMapper {
 
     /**
@@ -37,7 +37,7 @@ public class GameMapper {
      * @param grids карта
      * @return карта боя
      */
-    public static int[][] toGridsForOwner(GridPoint[][] grids) {
+    public int[][] toGridsForOwner(GridPoint[][] grids) {
         return toGrids(grids, true);
     }
 
@@ -47,7 +47,7 @@ public class GameMapper {
      * @param grids карта
      * @return карта боя
      */
-    public static int[][] toGridsForOpponent(GridPoint[][] grids) {
+    public int[][] toGridsForOpponent(GridPoint[][] grids) {
         return toGrids(grids, false);
     }
 

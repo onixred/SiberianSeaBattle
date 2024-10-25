@@ -128,9 +128,13 @@
 									ru.cbr.siberian.sea.battle
 								</scanPackage>
 							</scanPackages>
+							<blacklistRegexp>.*(Create|Fleet|Generate|Get|Grid|Join|Match|).*(Request|Response)(Message)</blacklistRegexp>
+
+							<hideFields>true</hideFields>
+							<hideMethods>true</hideMethods>
 							<additionalPlantUmlConfigs>
 								<additionalPlantUmlConfig>left to right direction</additionalPlantUmlConfig>
-								<additionalPlantUmlConfig>scale 2/3</additionalPlantUmlConfig>
+								<additionalPlantUmlConfig>scale 1/3</additionalPlantUmlConfig>
 							</additionalPlantUmlConfigs>
 						</configuration>
 					</execution>

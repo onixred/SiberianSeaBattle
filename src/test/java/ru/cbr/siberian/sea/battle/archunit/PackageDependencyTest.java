@@ -45,8 +45,8 @@ public class PackageDependencyTest {
                         Layer.CONFIGURATION.getPackageName(),
                         Layer.CONTROLLER.getPackageName(),
                         Layer.REPOSITORY.getPackageName(),
-                        Layer.SERVICE.getPackageName(),
-                        Layer.DAO.getPackageName());
+                        Layer.SERVICE.getPackageName()
+                        );
 
         rule.check(importedClasses);
     }
@@ -60,8 +60,7 @@ public class PackageDependencyTest {
         ArchRule rule = classes().that().resideInAPackage(Layer.ACL.getPackageName())
                 .should()
                 .dependOnClassesThat()
-                .resideInAPackage(
-                        Layer.MODEL.getPackageName());
+                .resideInAnyPackage(Layer.MODEL.getPackageName(), Layer.DAO.getPackageName());
 
         rule.check(importedClasses);
     }
@@ -80,4 +79,22 @@ public class PackageDependencyTest {
 
         rule.check(importedClasses);
     }
+
+    @Test
+    @DisplayName("Проверка кто не зависит от пакета ACL")
+    void AclPackageHaveNoDependencyTest() {
+        JavaClasses importedClasses = new ClassFileImporter()
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                .importPackages("ru.cbr.siberian.sea.battle");
+        ArchRule rule = noClasses().that().resideInAPackage(Layer.ACL.getPackageName())
+                .should()
+                .onlyHaveDependentClassesThat()
+                .resideInAnyPackage(Layer.CONFIGURATION.getPackageName(),
+                        Layer.CONTROLLER.getPackageName(),
+                        Layer.DAO.getPackageName(),
+                        Layer.MODEL.getPackageName(),
+                        Layer.REPOSITORY.getPackageName());
+        rule.check(importedClasses);
+    }
 }
+

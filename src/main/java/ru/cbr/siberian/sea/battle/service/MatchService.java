@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.cbr.siberian.sea.battle.acl.MatchMapper;
 import ru.cbr.siberian.sea.battle.dao.MatchDao;
 import ru.cbr.siberian.sea.battle.dao.PlayerDao;
 import ru.cbr.siberian.sea.battle.model.Match;
@@ -20,8 +21,8 @@ import java.util.UUID;
 public class MatchService {
 
     private final MatchRepository matchRepository;
-
     private final ModelMapper modelMapper;
+    private final MatchMapper matchMapper;
 
     @Transactional
     public Match createMatch(Player owner, int sizeGrid) {
@@ -51,7 +52,7 @@ public class MatchService {
     public List<Match> getAllMatches() {
         return matchRepository.findAll()
                 .stream()
-                .map(matchDao -> modelMapper.map(matchDao, Match.class))
+                .map(matchMapper::matchMapper)
                 .toList();
     }
 

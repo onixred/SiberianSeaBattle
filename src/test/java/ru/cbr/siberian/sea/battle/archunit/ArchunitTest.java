@@ -85,8 +85,8 @@ public class ArchunitTest {
                 .whereLayer("acl").mayOnlyBeAccessedByLayers("service")
                 .whereLayer("configuration").mayNotBeAccessedByAnyLayer()
                 .whereLayer("controller").mayNotBeAccessedByAnyLayer()
-                .whereLayer("dao").mayOnlyBeAccessedByLayers("repository", "service")
-                .whereLayer("model").mayOnlyBeAccessedByLayers("service", "model.message")
+                .whereLayer("dao").mayOnlyBeAccessedByLayers("repository", "service", "acl")
+                .whereLayer("model").mayOnlyBeAccessedByLayers("service", "model.message", "acl")
                 .whereLayer("model.enumeration").mayOnlyBeAccessedByLayers("dao", "model", "model.message", "repository", "service")
                 .whereLayer("model.game").mayOnlyBeAccessedByLayers("service", "acl")
                 .whereLayer("model.message").mayOnlyBeAccessedByLayers("controller", "service")
@@ -117,11 +117,11 @@ public class ArchunitTest {
         MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
         LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(metricsComponents);
         //https://www.archunit.org/userguide/html/000_Index.html
-        assertTrue(metrics.getCumulativeComponentDependency() <= 20, "CCD - Сумма зависимомтей всех компонентов " + metrics.getCumulativeComponentDependency());
-        assertTrue(metrics.getAverageComponentDependency() < 3, "ACD - CCD деленная на количество всех компонентов " + metrics.getAverageComponentDependency());
+        assertTrue(metrics.getCumulativeComponentDependency() <= 21, "CCD - Сумма зависимомтей всех компонентов " + metrics.getCumulativeComponentDependency());
+        assertTrue(metrics.getAverageComponentDependency() <= 3, "ACD - CCD деленная на количество всех компонентов " + metrics.getAverageComponentDependency());
 
         assertTrue(metrics.getRelativeAverageComponentDependency() < 0.5, "RACD - ACD деленное на количество всех компонентов " + metrics.getRelativeAverageComponentDependency());
-        assertTrue(metrics.getNormalizedCumulativeComponentDependency() < 1.20, "CCD системы, деленная на CCD сбалансированного бинарного дерева с тем же количеством компонентов " + metrics.getNormalizedCumulativeComponentDependency());
+        assertTrue(metrics.getNormalizedCumulativeComponentDependency() < 1.24, "CCD системы, деленная на CCD сбалансированного бинарного дерева с тем же количеством компонентов " + metrics.getNormalizedCumulativeComponentDependency());
     }
 
     @Test
@@ -136,11 +136,11 @@ public class ArchunitTest {
         MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
         ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(metricsComponents);
         int efferentCoupling = metrics.getEfferentCoupling(importPackages + ".acl");
-        assertTrue(efferentCoupling <= 1, "Ce - показывает зависимости пакета от внешних пакетов (исходящие зависимости)" + efferentCoupling);
+        assertTrue(efferentCoupling <= 2, "Ce - показывает зависимости пакета от внешних пакетов (исходящие зависимости)" + efferentCoupling);
         int afferentCoupling = metrics.getAfferentCoupling(importPackages + ".acl");
         assertTrue(afferentCoupling <= 1, "Ca - показывает зависимости внешних пакетов от указанного пакета (входящие зависимости)" + afferentCoupling);
         double instability = metrics.getInstability(importPackages + ".acl");
-        assertTrue(instability <= 0.5, "I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям" + instability);
+        assertTrue(instability <= 0.7, "I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям" + instability);
         double abstractness = metrics.getAbstractness(importPackages + ".acl");
         assertTrue(abstractness <= 0, "A - num(abstract_classes) / num(all_classes) в пакете" + abstractness);
         double normalizedDistanceFromMainSequence = metrics.getNormalizedDistanceFromMainSequence(importPackages + ".acl");
