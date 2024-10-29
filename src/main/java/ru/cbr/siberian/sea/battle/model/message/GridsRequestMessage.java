@@ -26,8 +26,7 @@ import lombok.EqualsAndHashCode;
  * crested on 22.09.2024
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class GridsRequestMessage  extends BaseRequestMessage {
+public class GridsRequestMessage  implements BaseRequestMessage {
     /**
      * Идентификатор канала
      */

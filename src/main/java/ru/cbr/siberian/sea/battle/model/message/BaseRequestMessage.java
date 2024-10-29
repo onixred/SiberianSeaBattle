@@ -21,5 +21,5 @@ package ru.cbr.siberian.sea.battle.model.message;
  * @author <a href="mailto:onixbed@gmail.com">amaksimov</a>
  * crested on 17.09.2024
  */
-public abstract class BaseRequestMessage {
+public interface BaseRequestMessage {
 }

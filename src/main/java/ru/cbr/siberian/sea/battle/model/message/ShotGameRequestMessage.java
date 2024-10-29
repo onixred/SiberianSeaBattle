@@ -28,8 +28,7 @@ import lombok.EqualsAndHashCode;
  * crested on 18.09.2024
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class ShotGameRequestMessage extends  BaseRequestMessage {
+public class ShotGameRequestMessage implements   BaseRequestMessage {
     /**
      *  Идентификатор игры
      */

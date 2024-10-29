@@ -28,8 +28,7 @@ import ru.cbr.siberian.sea.battle.model.enumeration.MatchStatus;
  * crested on 19.09.2024
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class MatchesRequestMessage extends BaseRequestMessage {
+public class MatchesRequestMessage implements BaseRequestMessage {
 
     /**
      * Идентификатор канала

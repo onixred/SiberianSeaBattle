@@ -11,8 +11,7 @@ import lombok.EqualsAndHashCode;
  * crested on 17.09.2024
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class CreateUserRequestMessage extends BaseRequestMessage {
+public class CreateUserRequestMessage implements BaseRequestMessage {
     /**
      * Логин игрока
      */

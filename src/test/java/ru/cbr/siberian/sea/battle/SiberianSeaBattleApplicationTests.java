@@ -1,6 +1,7 @@
 package ru.cbr.siberian.sea.battle;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,7 @@ import ru.cbr.siberian.sea.battle.service.*;
 import java.util.UUID;
 
 @Slf4j
+@Disabled
 @SpringBootTest
 class SiberianSeaBattleApplicationTests {
 

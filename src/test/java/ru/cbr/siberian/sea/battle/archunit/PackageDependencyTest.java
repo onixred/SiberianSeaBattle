@@ -34,7 +34,7 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 public class PackageDependencyTest {
     @Test
     @DisplayName("Проверка от каких пакетов не зависит ACL")
-    void AclPackageNoDependencyTest() {
+    void aclPackageNoDependencyTest() {
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages("ru.cbr.siberian.sea.battle");
@@ -53,7 +53,7 @@ public class PackageDependencyTest {
 
     @Test
     @DisplayName("Проверка от каких пакетов зависит ACL")
-    void AclPackageDependencyTest() {
+    void aclPackageDependencyTest() {
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages("ru.cbr.siberian.sea.battle");
@@ -67,7 +67,7 @@ public class PackageDependencyTest {
 
     @Test
     @DisplayName("Проверка кто зависит от пакета ACL")
-    void AclPackageHaveDependencyTest() {
+    void aclPackageHaveDependencyTest() {
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages("ru.cbr.siberian.sea.battle");
@@ -82,7 +82,7 @@ public class PackageDependencyTest {
 
     @Test
     @DisplayName("Проверка кто не зависит от пакета ACL")
-    void AclPackageHaveNoDependencyTest() {
+    void aclPackageHaveNoDependencyTest() {
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages("ru.cbr.siberian.sea.battle");

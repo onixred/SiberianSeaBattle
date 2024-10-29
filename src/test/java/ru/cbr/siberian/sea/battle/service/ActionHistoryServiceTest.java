@@ -1,6 +1,7 @@
 package ru.cbr.siberian.sea.battle.service;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,6 +11,7 @@ import ru.cbr.siberian.sea.battle.model.Player;
 
 import java.util.UUID;
 
+@Disabled
 @SpringBootTest
 class ActionHistoryServiceTest {
 

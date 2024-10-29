@@ -19,29 +19,33 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.cbr.siberian.sea.battle.model.message.BaseRequestMessage;
 
+import static com.tngtech.archunit.core.domain.properties.CanBeAnnotated.Predicates.annotatedWith;
+import static com.tngtech.archunit.lang.conditions.ArchPredicates.are;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 
 /**
  * Description:
  *
  * @author <a href="mailto:onixbed@gmail.com">amaksimov</a>
- * crested on 23.10.2024
+ * crested on 29.10.2024
  */
-public class PackageContainmentTest {
+public class AnnotationTest {
 
     @Test
-    @DisplayName("Проверка в пакете ACL все классы с постфиксом Mapper")
-    void gameMapperClassDependencyTest() {
+    @DisplayName("Проверка все поля классов реализующие интерфейс BaseRequestMessage используют аннотации проверки NotBlank или NotNull")
+    void annotationBaseRequestMessageTest() {
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages("ru.cbr.siberian.sea.battle");
-
-        ArchRule rule = classes().that().haveNameMatching(".*Mapper")
-                .should()
-                .resideInAPackage(Layer.ACL.getPackageName());
+        ArchRule rule = classes().that().areAssignableTo(BaseRequestMessage.class)
+                .should().onlyAccessFieldsThat(are(annotatedWith(NotBlank.class)).or(annotatedWith(NotNull.class)));
 
         rule.check(importedClasses);
-    }}
+    }
+}

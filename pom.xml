@@ -128,7 +128,7 @@
 									ru.cbr.siberian.sea.battle
 								</scanPackage>
 							</scanPackages>
-							<blacklistRegexp>.*(Create|Fleet|Generate|Get|Grid|Join|Match|).*(Request|Response)(Message)</blacklistRegexp>
+							<blacklistRegexp>.*(Create|Fleet|Generate|Get|Grid|Join|Match).*(Request|Response)(Message)</blacklistRegexp>
 
 							<hideFields>true</hideFields>
 							<hideMethods>true</hideMethods>
