@@ -257,6 +257,44 @@ note right on link #crimson: Доступ в верхний слой запре�
 ```
 
 ```
+@startuml beFreeOfCyclesTest
+hide empty members
+set separator none
+skinparam componentStyle uml2
+
+skinparam component {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+skinparam class {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+package com.myapp.moduleone {
+    class ClassOneInModuleOne
+    class ClassTwoInModuleOne
+}
+package com.myapp.moduletwo {
+    class ClassOneInModuleTwo
+    class ClassTwoInModuleTwo
+}
+package com.myapp.modulethree {
+    class ClassOneInModuleThree
+    class ClassTwoInModuleThree
+}
+
+ClassOneInModuleOne --> ClassTwoInModuleTwo #crimson
+ClassOneInModuleTwo --> ClassOneInModuleThree #crimson
+ClassTwoInModuleThree --> ClassOneInModuleOne #crimson
+note right on link #crimson: Combination of accesses forms cycle
+@enduml
+```
+
+
+
+```
 @startuml uml
 
 interface ru.cbr.siberian.sea.battle.repository.MatchRepository {
@@ -431,5 +469,18 @@ Architectures.LayeredArchitecture layeredArchitecture = layeredArchitecture().co
 layeredArchitecture.check(importPackages);
 ```
 
+###  Проверка циклов
+![asd](../../../target/generated-diagrams/beFreeOfCyclesTest.svg)
+```java
+JavaClasses importPackages = new ClassFileImporter()
+        .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+        .importPackages("ru.cbr.siberian.sea.battle");
+SliceRule sliceRule = slices()
+        .matching("ru.cbr.siberian.sea.battle.(*)..")
+        .should()
+        .beFreeOfCycles();
+sliceRule.check(importPackages);
+
+```
 
 ![asd](../../../target/generated-diagrams/uml.svg)
