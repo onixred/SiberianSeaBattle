@@ -190,6 +190,71 @@ CreateUserRequestMessage ..|> BaseRequestMessage #green
 @enduml
 ```
 
+```
+@startuml layeredTest
+hide empty members
+set separator none
+skinparam componentStyle uml2
+
+skinparam component {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+skinparam class {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+package ru.cbr.siberian.sea.battle.configuration {
+    class WebSocketConfiguration
+}
+
+package ru.cbr.siberian.sea.battle.acl {
+    class MatchMapper
+
+}
+
+package ru.cbr.siberian.sea.battle.controller {
+    class GameController
+}
+
+package ru.cbr.siberian.sea.battle.dao {
+    class MatchDao
+}
+
+package ru.cbr.siberian.sea.battle.model {
+    class Match
+}
+
+package ru.cbr.siberian.sea.battle.repository {
+    interface MatchRepository
+}
+
+package ru.cbr.siberian.sea.battle.service {
+    class MatchService
+    class SeaBattleService
+}
+
+GameController -down-> SeaBattleService #green
+
+MatchService -down-> MatchMapper #green
+MatchService -down-> MatchRepository #green
+
+MatchMapper -down-> Match #green
+MatchMapper -down-> MatchDao #green
+
+MatchRepository -down-> MatchDao #green
+
+GameController -up-> MatchRepository #crimson
+note right on link #crimson: Доступ в обход слоя запрещен
+
+MatchService -up--> GameController #crimson
+note right on link #crimson: Доступ в верхний слой запрещен
+
+
+@enduml
+```
 
 ```
 @startuml uml
@@ -339,8 +404,8 @@ ArchRule rule = classes().that().areAssignableTo(BaseRequestMessage.class)
 
 rule.check(importedClasses);
 ```
-###  Проверка все поля классов реализующие интерфейс BaseRequestMessage используют аннотации проверки NotBlank или NotNull
-![asd](../../../target/generated-diagrams/annotationBaseRequestMessageTest.svg)
+###  Проверка слоев
+![asd](../../../target/generated-diagrams/layeredTest.svg)
 ```java
 
 JavaClasses importPackages = new ClassFileImporter()
@@ -359,11 +424,8 @@ Architectures.LayeredArchitecture layeredArchitecture = layeredArchitecture().co
         .whereLayer("acl").mayOnlyBeAccessedByLayers("service")
         .whereLayer("configuration").mayNotBeAccessedByAnyLayer()
         .whereLayer("controller").mayNotBeAccessedByAnyLayer()
-        .whereLayer("dao").mayOnlyBeAccessedByLayers("repository", "service", "acl")
-        .whereLayer("model").mayOnlyBeAccessedByLayers("service", "model", "acl")
-        .whereLayer("model.enumeration").mayOnlyBeAccessedByLayers("dao", "model", "model", "repository", "service")
-        .whereLayer("model.game").mayOnlyBeAccessedByLayers("service", "acl")
-        .whereLayer("model.message").mayOnlyBeAccessedByLayers("controller", "service")
+        .whereLayer("dao").mayOnlyBeAccessedByLayers("repository", "acl")
+        .whereLayer("model").mayOnlyBeAccessedByLayers("service",  "acl",  "controller")
         .whereLayer("repository").mayOnlyBeAccessedByLayers("service")
         .whereLayer("service").mayOnlyBeAccessedByLayers("controller");
 layeredArchitecture.check(importPackages);

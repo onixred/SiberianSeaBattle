@@ -65,7 +65,7 @@ public class ArchunitTest {
     }
 
     @Test
-    void layeredArchitectureTest() {
+    void layeredTest() {
         JavaClasses importPackages = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages("ru.cbr.siberian.sea.battle");
@@ -82,12 +82,12 @@ public class ArchunitTest {
                 .layer("repository").definedBy("ru.cbr.siberian.sea.battle.repository..")
                 .layer("service").definedBy("ru.cbr.siberian.sea.battle.service..")
 
-                .whereLayer("acl").mayOnlyBeAccessedByLayers("service")
+                .whereLayer("acl").mayOnlyBeAccessedByLayers("service", "model.enumeration")
                 .whereLayer("configuration").mayNotBeAccessedByAnyLayer()
                 .whereLayer("controller").mayNotBeAccessedByAnyLayer()
-                .whereLayer("dao").mayOnlyBeAccessedByLayers("repository", "service", "acl")
+                .whereLayer("dao").mayOnlyBeAccessedByLayers("repository",  "acl")
                 .whereLayer("model").mayOnlyBeAccessedByLayers("service", "model.message", "acl")
-                .whereLayer("model.enumeration").mayOnlyBeAccessedByLayers("dao", "model", "model.message", "repository", "service")
+                .whereLayer("model.enumeration").mayOnlyBeAccessedByLayers("dao", "model", "model.message", "repository", "service", "acl")
                 .whereLayer("model.game").mayOnlyBeAccessedByLayers("service", "acl")
                 .whereLayer("model.message").mayOnlyBeAccessedByLayers("controller", "service")
                 .whereLayer("repository").mayOnlyBeAccessedByLayers("service")
