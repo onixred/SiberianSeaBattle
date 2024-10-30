@@ -39,7 +39,7 @@ public class PackageContainmentTest {
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages("ru.cbr.siberian.sea.battle");
 
-        ArchRule rule = classes().that().haveNameMatching(".*Mapper")
+        ArchRule rule = classes().that().haveSimpleNameEndingWith("Mapper")
                 .should()
                 .resideInAPackage(Layer.ACL.getPackageName());
 

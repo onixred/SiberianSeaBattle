@@ -18,6 +18,7 @@ import ru.cbr.siberian.sea.battle.acl.GameMapper;
 import ru.cbr.siberian.sea.battle.model.message.MatchUI;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
@@ -71,27 +72,27 @@ public class ArchunitTest {
                 .importPackages("ru.cbr.siberian.sea.battle");
 
         Architectures.LayeredArchitecture layeredArchitecture = layeredArchitecture().consideringAllDependencies()
-                .layer("acl").definedBy("ru.cbr.siberian.sea.battle.acl..")
-                .layer("configuration").definedBy("ru.cbr.siberian.sea.battle.configuration..")
-                .layer("controller").definedBy("ru.cbr.siberian.sea.battle.controller..")
-                .layer("dao").definedBy("ru.cbr.siberian.sea.battle.dao..")
-                .layer("model").definedBy("ru.cbr.siberian.sea.battle.model")
+                .layer(Layer.ACL.name()).definedBy("ru.cbr.siberian.sea.battle.acl..")
+                .layer(Layer.CONFIGURATION.name()).definedBy("ru.cbr.siberian.sea.battle.configuration..")
+                .layer(Layer.CONTROLLER.name()).definedBy("ru.cbr.siberian.sea.battle.controller..")
+                .layer(Layer.DAO.name()).definedBy("ru.cbr.siberian.sea.battle.dao..")
+                .layer(Layer.MODEL.name()).definedBy("ru.cbr.siberian.sea.battle.model")
                 .layer("model.enumeration").definedBy("ru.cbr.siberian.sea.battle.model.enumeration..")
                 .layer("model.game").definedBy("ru.cbr.siberian.sea.battle.model.game..")
                 .layer("model.message").definedBy("ru.cbr.siberian.sea.battle.model.message..")
-                .layer("repository").definedBy("ru.cbr.siberian.sea.battle.repository..")
-                .layer("service").definedBy("ru.cbr.siberian.sea.battle.service..")
+                .layer(Layer.REPOSITORY.name()).definedBy("ru.cbr.siberian.sea.battle.repository..")
+                .layer(Layer.SERVICE.name()).definedBy("ru.cbr.siberian.sea.battle.service..")
 
-                .whereLayer("acl").mayOnlyBeAccessedByLayers("service", "model.enumeration")
-                .whereLayer("configuration").mayNotBeAccessedByAnyLayer()
-                .whereLayer("controller").mayNotBeAccessedByAnyLayer()
-                .whereLayer("dao").mayOnlyBeAccessedByLayers("repository",  "acl")
-                .whereLayer("model").mayOnlyBeAccessedByLayers("service", "model.message", "acl")
-                .whereLayer("model.enumeration").mayOnlyBeAccessedByLayers("dao", "model", "model.message", "repository", "service", "acl")
-                .whereLayer("model.game").mayOnlyBeAccessedByLayers("service", "acl")
-                .whereLayer("model.message").mayOnlyBeAccessedByLayers("controller", "service")
-                .whereLayer("repository").mayOnlyBeAccessedByLayers("service")
-                .whereLayer("service").mayOnlyBeAccessedByLayers("controller");
+                .whereLayer(Layer.ACL.name()).mayOnlyBeAccessedByLayers(Layer.SERVICE.name(), "model.enumeration")
+                .whereLayer(Layer.CONFIGURATION.name()).mayNotBeAccessedByAnyLayer()
+                .whereLayer(Layer.CONTROLLER.name()).mayNotBeAccessedByAnyLayer()
+                .whereLayer(Layer.DAO.name()).mayOnlyBeAccessedByLayers(Layer.REPOSITORY.name(),  Layer.ACL.name())
+                .whereLayer(Layer.MODEL.name()).mayOnlyBeAccessedByLayers(Layer.SERVICE.name(), "model.message", Layer.ACL.name())
+                .whereLayer("model.enumeration").mayOnlyBeAccessedByLayers(Layer.DAO.name(), Layer.MODEL.name(), "model.message", Layer.REPOSITORY.name(),Layer.SERVICE.name(), Layer.ACL.name())
+                .whereLayer("model.game").mayOnlyBeAccessedByLayers(Layer.SERVICE.name(), Layer.ACL.name())
+                .whereLayer("model.message").mayOnlyBeAccessedByLayers(Layer.CONTROLLER.name(), Layer.SERVICE.name())
+                .whereLayer(Layer.REPOSITORY.name()).mayOnlyBeAccessedByLayers(Layer.SERVICE.name())
+                .whereLayer(Layer.SERVICE.name()).mayOnlyBeAccessedByLayers(Layer.CONTROLLER.name());
         layeredArchitecture.check(importPackages);
     }
 
@@ -115,6 +116,7 @@ public class ArchunitTest {
 
         Set<JavaPackage> subpackages = importPackages.getPackage("ru.cbr.siberian.sea.battle").getSubpackages();
         MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
+
         LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(metricsComponents);
         //https://www.archunit.org/userguide/html/000_Index.html
         assertTrue(metrics.getCumulativeComponentDependency() <= 21, "CCD - Сумма зависимомтей всех компонентов " + metrics.getCumulativeComponentDependency());

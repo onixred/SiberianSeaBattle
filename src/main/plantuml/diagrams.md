@@ -9,19 +9,20 @@ skinparam component {
 BorderColor #grey
 BackgroundColor #white
 }
-[acl] --[#green]right-->  [model]:allowed
-[acl] --[#green]left-->  [dao]:allowed
+[acl] --[#green]right-->  [model]
+note left on link #green: доступ разрешен
+[acl] --[#green]left-->  [dao]
+note left on link #green: доступ разрешен
 [acl] --[#crimson]-->  [configuration]
-note top on link #crimson: forbidden
+note top on link #crimson: доступ запрещен
 [acl] --[#crimson]-->  [controller]
-note top on link #crimson: forbidden
+note top on link #crimson: доступ запрещен
 [acl] --[#crimson]-->  [repository]
-note top on link #crimson: forbidden
+note top on link #crimson: доступ запрещен
 [acl] --[#crimson]-->  [service]
-note top on link #crimson: forbidden
+note top on link #crimson: доступ запрещен
 @enduml
 ```
-
 
 
 ```
@@ -32,10 +33,12 @@ BorderColor #grey
 BackgroundColor #white
 }
 
-[acl] --[#green]right-->  [model]:allowed
-[acl] --[#green]right-->  [dao]:allowed
+[acl] --[#green]right-->  [model]
+note left on link #green: доступ разрешен
+[acl] --[#green]right-->  [dao]
+note left on link #green: доступ разрешен
 [acl] --[#crimson]left--> [service]
-note top on link #crimson: forbidden
+note top on link #crimson: доступ запрещен
 @enduml
 ```
 
@@ -47,7 +50,8 @@ BorderColor #grey
 BackgroundColor #white
 }
 
-[service] --[#green]right-->  [acl]:allowed
+[service] --[#green]right-->  [acl]
+note left on link #green: доступ разрешен
 [model]
 @enduml
 ```
@@ -60,7 +64,8 @@ BorderColor #grey
 BackgroundColor #white
 }
 
-[service] --[#green]right-->  [acl]:allowed
+[service] --[#green]right-->  [acl]
+note left on link #green: доступ разрешен
 [configuration]
 [controller]
 [dao]
@@ -89,10 +94,10 @@ class GameService
 class MatchMapper
 
 GameService -> MatchMapper
-note top on link #crimson: forbidden
+note top on link #crimson: доступ запрещен
 
 MatchService --> MatchMapper #green
-note left on link #green: allowed
+note left on link #green: доступ разрешен
 @enduml
 ```
 
@@ -121,7 +126,7 @@ package ru.cbr.siberian.sea.battle.service {
 class MatchService
 }
 
-note "resides in service package" as ServicePackage #crimson
+note "находится в пакете 'service'" as ServicePackage #crimson
 MatchService .. ServicePackage
 @enduml
 ```
@@ -150,7 +155,7 @@ CreateGameRequestMessage ..|> BaseRequestMessage #green
 CreateUserRequestMessage ..|> BaseRequestMessage #green
 ChatRequest ..|> BaseRequestMessage #crimson
 
-note right on link #crimson: Has wrong name
+note right on link #crimson: Неправильное имя у класса
 @enduml
 ```
 
@@ -219,14 +224,6 @@ package ru.cbr.siberian.sea.battle.controller {
     class GameController
 }
 
-package ru.cbr.siberian.sea.battle.dao {
-    class MatchDao
-}
-
-package ru.cbr.siberian.sea.battle.model {
-    class Match
-}
-
 package ru.cbr.siberian.sea.battle.repository {
     interface MatchRepository
 }
@@ -241,10 +238,6 @@ GameController -down-> SeaBattleService #green
 MatchService -down-> MatchMapper #green
 MatchService -down-> MatchRepository #green
 
-MatchMapper -down-> Match #green
-MatchMapper -down-> MatchDao #green
-
-MatchRepository -down-> MatchDao #green
 
 GameController -up-> MatchRepository #crimson
 note right on link #crimson: Доступ в обход слоя запрещен
@@ -272,26 +265,84 @@ skinparam class {
   BackgroundColor #white
 }
 
-package com.myapp.moduleone {
-    class ClassOneInModuleOne
-    class ClassTwoInModuleOne
-}
-package com.myapp.moduletwo {
-    class ClassOneInModuleTwo
-    class ClassTwoInModuleTwo
-}
-package com.myapp.modulethree {
-    class ClassOneInModuleThree
-    class ClassTwoInModuleThree
+package ru.cbr.siberian.sea.battle.acl {
+    class MatchMapper
 }
 
-ClassOneInModuleOne --> ClassTwoInModuleTwo #crimson
-ClassOneInModuleTwo --> ClassOneInModuleThree #crimson
-ClassTwoInModuleThree --> ClassOneInModuleOne #crimson
-note right on link #crimson: Combination of accesses forms cycle
+package ru.cbr.siberian.sea.battle.configuration {
+    class WebSocketConfiguration
+}
+
+package ru.cbr.siberian.sea.battle.controller {
+    class GameController
+}
+
+package ru.cbr.siberian.sea.battle.dao {
+    class MatchDao
+}
+
+package ru.cbr.siberian.sea.battle.model {
+    class Match
+}
+
+package ru.cbr.siberian.sea.battle.repository {
+    interface MatchRepository
+}
+
+package ru.cbr.siberian.sea.battle.service {
+    class MatchService
+    class SeaBattleService
+}
+
+GameController -down-> SeaBattleService #green
+
+MatchService -down-> MatchMapper #green
+MatchService -down-> MatchRepository #green
+MatchRepository -down-> MatchDao #green
+MatchMapper -down-> MatchDao #green
+MatchMapper -down-> Match #green
+MatchMapper --> SeaBattleService #crimson
+note right on link #crimson: Комбинация создает цикл
+
 @enduml
 ```
 
+```
+@startuml lakosMetricsTest
+skinparam componentStyle uml2
+skinparam component {
+  BorderColor #grey
+  BackgroundColor #white
+}
+skinparam legend {
+  BackgroundColor #lightyellow
+}
+
+[Component ru.cbr.siberian.sea.battle.acl\nDependsOn: 3] as acl
+[Component ru.cbr.siberian.sea.battle.configuration\nDependsOn: 1] as configuration
+[Component ru.cbr.siberian.sea.battle.controller\nDependsOn: 7] as controller
+[Component ru.cbr.siberian.sea.battle.dao\nDependsOn: 1] as dao
+[Component ru.cbr.siberian.sea.battle.model\nDependsOn: 1] as model
+[Component ru.cbr.siberian.sea.battle.repository\nDependsOn: 2] as repository
+[Component ru.cbr.siberian.sea.battle.service\nDependsOn: 6] as service
+
+
+controller --> service
+service --> acl
+service --> repository
+repository --> dao
+acl --> dao
+acl --> model
+
+legend
+| <b>CCD</b>  | 21   |
+| <b>ACD</b>  | 3  |
+| <b>RACD</b> | 0.42  |
+| <b>NCCD</b> | 1.235 |
+endlegend
+
+@enduml
+```
 
 
 ```
@@ -412,7 +463,7 @@ JavaClasses importedClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
         .importPackages("ru.cbr.siberian.sea.battle");
 
-ArchRule rule = classes().that().haveNameMatching(".*Mapper")
+ArchRule rule = classes().that().haveSimpleNameEndingWith("Mapper")
         .should()
         .resideInAPackage(Layer.ACL.getPackageName());
 
@@ -454,18 +505,31 @@ Architectures.LayeredArchitecture layeredArchitecture = layeredArchitecture().co
         .layer("acl").definedBy("ru.cbr.siberian.sea.battle.acl..")
         .layer("configuration").definedBy("ru.cbr.siberian.sea.battle.configuration..")
         .layer("controller").definedBy("ru.cbr.siberian.sea.battle.controller..")
-        .layer("dao").definedBy("ru.cbr.siberian.sea.battle.dao..")
-        .layer("model").definedBy("ru.cbr.siberian.sea.battle.model..")
         .layer("repository").definedBy("ru.cbr.siberian.sea.battle.repository..")
         .layer("service").definedBy("ru.cbr.siberian.sea.battle.service..")
 
         .whereLayer("acl").mayOnlyBeAccessedByLayers("service")
         .whereLayer("configuration").mayNotBeAccessedByAnyLayer()
         .whereLayer("controller").mayNotBeAccessedByAnyLayer()
-        .whereLayer("dao").mayOnlyBeAccessedByLayers("repository", "acl")
-        .whereLayer("model").mayOnlyBeAccessedByLayers("service",  "acl",  "controller")
         .whereLayer("repository").mayOnlyBeAccessedByLayers("service")
         .whereLayer("service").mayOnlyBeAccessedByLayers("controller");
+layeredArchitecture.check(importPackages);
+JavaClasses importPackages = new ClassFileImporter()
+        .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+        .importPackages("ru.cbr.siberian.sea.battle");
+
+Architectures.LayeredArchitecture layeredArchitecture = layeredArchitecture().consideringAllDependencies()
+        .layer(Layer.ACL.name()).definedBy("ru.cbr.siberian.sea.battle.acl..")
+        .layer(Layer.CONFIGURATION.name()).definedBy("ru.cbr.siberian.sea.battle.configuration..")
+        .layer(Layer.CONTROLLER.name()).definedBy("ru.cbr.siberian.sea.battle.controller..")
+        .layer(Layer.REPOSITORY.name()).definedBy("ru.cbr.siberian.sea.battle.repository..")
+        .layer(Layer.SERVICE.name()).definedBy("ru.cbr.siberian.sea.battle.service..")
+
+        .whereLayer(Layer.ACL.name()).mayOnlyBeAccessedByLayers(Layer.SERVICE.name())
+        .whereLayer(Layer.CONFIGURATION.name()).mayNotBeAccessedByAnyLayer()
+        .whereLayer(Layer.CONTROLLER.name()).mayNotBeAccessedByAnyLayer()
+        .whereLayer(Layer.REPOSITORY.name()).mayOnlyBeAccessedByLayers(Layer.SERVICE.name())
+        .whereLayer(Layer.SERVICE.name()).mayOnlyBeAccessedByLayers(Layer.CONTROLLER.name());
 layeredArchitecture.check(importPackages);
 ```
 
@@ -480,7 +544,23 @@ SliceRule sliceRule = slices()
         .should()
         .beFreeOfCycles();
 sliceRule.check(importPackages);
-
 ```
+
+###  Проверка метрик 
+![asd](../../../target/generated-diagrams/lakosMetricsTest.svg)
+```java
+ JavaClasses importPackages = new ClassFileImporter()
+        .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+        .importPackages("ru.cbr.siberian.sea.battle");
+
+Set<JavaPackage> subpackages = importPackages.getPackage("ru.cbr.siberian.sea.battle").getSubpackages();
+MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
+LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(metricsComponents);
+
+assertTrue(metrics.getCumulativeComponentDependency() <= 21, "CCD - Сумма зависимомтей всех компонентов " + metrics.getCumulativeComponentDependency());
+assertTrue(metrics.getAverageComponentDependency() <= 3, "ACD - CCD деленная на количество всех компонентов " + metrics.getAverageComponentDependency());
+```
+
+
 
 ![asd](../../../target/generated-diagrams/uml.svg)
