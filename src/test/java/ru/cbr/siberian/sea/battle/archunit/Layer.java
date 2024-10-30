@@ -39,4 +39,8 @@ public enum Layer {
        return ".." + name().toLowerCase() + "..";
    }
 
+    public String getComponentIdentifier(String packages) {
+        return packages + "." + name().toLowerCase();
+    }
+
 }

@@ -344,6 +344,36 @@ endlegend
 @enduml
 ```
 
+```
+@startuml componentDependencyMetricsTest
+skinparam componentStyle uml2
+skinparam component {
+  BorderColor #grey
+  BackgroundColor #white
+}
+skinparam legend {
+  BackgroundColor #lightyellow
+}
+
+[Component ru.cbr.siberian.sea.battle.acl \nCe: 2\nCa: 1\nI: 0.66] as acl
+[Component ru.cbr.siberian.sea.battle.configuration \nCe: 0\nCa: 0\nI: 1] as configuration
+[Component ru.cbr.siberian.sea.battle.controller \nCe: 2\nCa: 0\nI: 1] as controller
+[Component ru.cbr.siberian.sea.battle.dao \nCe: 0\nCa: 2\nI: 0] as dao
+[Component ru.cbr.siberian.sea.battle.model \nCe: 0\nCa: 5\nI: 0] as model
+[Component ru.cbr.siberian.sea.battle.repository \nCe: 1\nCa: 1\nI: 0.5] as repository
+[Component ru.cbr.siberian.sea.battle.service \nCe: 2\nCa: 1\nI: 0.75] as service
+
+
+controller --> service
+service --> acl
+service --> repository
+repository --> dao
+acl --> dao
+acl --> model
+
+@enduml
+```
+
 
 ```
 @startuml uml
@@ -546,7 +576,7 @@ SliceRule sliceRule = slices()
 sliceRule.check(importPackages);
 ```
 
-###  Проверка метрик 
+###  Проверка метрик Джона Лакоса 
 ![asd](../../../target/generated-diagrams/lakosMetricsTest.svg)
 ```java
  JavaClasses importPackages = new ClassFileImporter()
@@ -559,6 +589,30 @@ LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(metricsComponents);
 
 assertTrue(metrics.getCumulativeComponentDependency() <= 21, "CCD - Сумма зависимомтей всех компонентов " + metrics.getCumulativeComponentDependency());
 assertTrue(metrics.getAverageComponentDependency() <= 3, "ACD - CCD деленная на количество всех компонентов " + metrics.getAverageComponentDependency());
+```
+
+###  Проверка метрик основе книги Роберта Мартина «Чистая архитектура»
+![asd](../../../target/generated-diagrams/componentDependencyMetricsTest.svg)
+
+В структуре компонентов нестабильные компоненты должны располагаться сверху, а более стабильные — снизу,
+Чем больше I тем не стабильнее компонент.
+```java
+JavaClasses javaClasses = new ClassFileImporter()
+        .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+        .importPackages(importPackages);
+
+Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.sea.battle").getSubpackages();
+MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
+ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(metricsComponents);
+
+int efferentCoupling = metrics.getEfferentCoupling(Layer.ACL.getComponentIdentifier());
+assertTrue(efferentCoupling <= 2, "Ce - показывает зависимости пакета от внешних пакетов (исходящие зависимости)" + efferentCoupling);
+
+int afferentCoupling = metrics.getAfferentCoupling(Layer.ACL.getComponentIdentifier());
+assertTrue(afferentCoupling <= 1, "Ca - показывает зависимости внешних пакетов от указанного пакета (входящие зависимости)" + afferentCoupling);
+
+double instability = metrics.getInstability(Layer.ACL.getComponentIdentifier());
+assertTrue(instability <= 0.7, "I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям (нестабильность)" + instability);
 ```
 
 
