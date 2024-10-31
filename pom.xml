@@ -138,6 +138,28 @@
 							</additionalPlantUmlConfigs>
 						</configuration>
 					</execution>
+					<execution>
+						<id>generate-simple-diagram2</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<phase>test</phase>
+						<configuration>
+							<outputFilename>${project.artifactId}-class-dependency2.puml</outputFilename>
+							<scanPackages>
+								<scanPackage>
+									ru.cbr.siberian.feature.first
+								</scanPackage>
+							</scanPackages>
+							<blacklistRegexp>.*(Create|Fleet|Generate|Get|Grid|Join|Match).*(Request|Response)(Message)</blacklistRegexp>
+							<hideFields>true</hideFields>
+							<hideMethods>true</hideMethods>
+							<additionalPlantUmlConfigs>
+								<additionalPlantUmlConfig>left to right direction</additionalPlantUmlConfig>
+								<additionalPlantUmlConfig>scale 1/3</additionalPlantUmlConfig>
+							</additionalPlantUmlConfigs>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>

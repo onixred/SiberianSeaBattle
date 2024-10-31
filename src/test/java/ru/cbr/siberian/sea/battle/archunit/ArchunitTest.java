@@ -15,14 +15,21 @@ import com.tngtech.archunit.library.metrics.MetricsComponents;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.cbr.siberian.sea.battle.acl.GameMapper;
+import ru.cbr.siberian.sea.battle.acl.MatchMapper;
+import ru.cbr.siberian.sea.battle.dao.MatchDao;
+import ru.cbr.siberian.sea.battle.model.Match;
 import ru.cbr.siberian.sea.battle.model.message.MatchUI;
 
+import java.net.URL;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
+import static com.tngtech.archunit.library.plantuml.rules.PlantUmlArchCondition.Configuration.consideringAllDependencies;
+import static com.tngtech.archunit.library.plantuml.rules.PlantUmlArchCondition.adhereToPlantUmlDiagram;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ArchunitTest {
@@ -119,11 +126,30 @@ public class ArchunitTest {
 
         LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(metricsComponents);
         //https://www.archunit.org/userguide/html/000_Index.html
-        assertTrue(metrics.getCumulativeComponentDependency() <= 21, "CCD - Сумма зависимомтей всех компонентов " + metrics.getCumulativeComponentDependency());
+        assertTrue(metrics.getCumulativeComponentDependency() <= 21, "CCD - Сумма зависимостей всех компонентов " + metrics.getCumulativeComponentDependency());
         assertTrue(metrics.getAverageComponentDependency() <= 3, "ACD - CCD деленная на количество всех компонентов " + metrics.getAverageComponentDependency());
 
         assertTrue(metrics.getRelativeAverageComponentDependency() < 0.5, "RACD - ACD деленное на количество всех компонентов " + metrics.getRelativeAverageComponentDependency());
         assertTrue(metrics.getNormalizedCumulativeComponentDependency() < 1.24, "CCD системы, деленная на CCD сбалансированного бинарного дерева с тем же количеством компонентов " + metrics.getNormalizedCumulativeComponentDependency());
+    }
+
+    @Test
+    void lakosMetricsFeatureFirstTest() {
+        String importPackages = "ru.cbr.siberian.feature.first.sea.battle";
+        JavaClasses javaClasses = new ClassFileImporter()
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                .importPackages(importPackages);
+
+        Set<JavaPackage> subpackages = javaClasses.getPackage(importPackages).getSubpackages();
+        MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
+
+        LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(metricsComponents);
+        //https://www.archunit.org/userguide/html/000_Index.html
+        assertTrue(metrics.getCumulativeComponentDependency() <= 13, "CCD - Сумма зависимостей всех компонентов " + metrics.getCumulativeComponentDependency());
+        assertTrue(metrics.getAverageComponentDependency() <= 2.17, "ACD - CCD деленная на количество всех компонентов " + metrics.getAverageComponentDependency());
+
+        assertTrue(metrics.getRelativeAverageComponentDependency() < 0.37, "RACD - ACD деленное на количество всех компонентов " + metrics.getRelativeAverageComponentDependency());
+        assertTrue(metrics.getNormalizedCumulativeComponentDependency() < 0.93, "CCD системы, деленная на CCD сбалансированного бинарного дерева с тем же количеством компонентов " + metrics.getNormalizedCumulativeComponentDependency());
     }
 
     @Test
@@ -158,6 +184,39 @@ public class ArchunitTest {
 
 
     @Test
+    void componentDependencyMetricsFeatureFirstTest() {
+        String importPackages = "ru.cbr.siberian.feature.first.sea.battle";
+
+        JavaClasses javaClasses = new ClassFileImporter()
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                .importPackages(importPackages);
+
+        Set<JavaPackage> subpackages = javaClasses.getPackage(importPackages).getSubpackages();
+        MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
+        ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(metricsComponents);
+        List<String> layers = List.of(".game", ".match", ".player", ".common", ".configuration", ".notification");
+        for(String layer: layers) {
+            int efferentCoupling = metrics.getEfferentCoupling(importPackages + layer);
+            System.out.println(layer + " Ce - показывает зависимости пакета от внешних пакетов (исходящие зависимости) " + efferentCoupling);
+            //assertTrue(efferentCoupling <= 3, layer + " Ce - показывает зависимости пакета от внешних пакетов (исходящие зависимости) " + efferentCoupling);
+            int afferentCoupling = metrics.getAfferentCoupling(importPackages + layer);
+            //assertTrue(afferentCoupling <= 5, layer + " Ca - показывает зависимости внешних пакетов от указанного пакета (входящие зависимости) " + afferentCoupling);
+            System.out.println(layer + " Ca - показывает зависимости внешних пакетов от указанного пакета (входящие зависимости) " + afferentCoupling);
+            double instability = metrics.getInstability(importPackages + layer);
+            //assertTrue(instability <= 1, layer + " I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям " + instability);
+            System.out.println(layer + " I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям " + instability);
+            double abstractness = metrics.getAbstractness(importPackages + layer);
+            //assertTrue(abstractness <= 1, layer + " A - num(abstract_classes) / num(all_classes) в пакете " + abstractness);
+            System.out.println();
+            double normalizedDistanceFromMainSequence = metrics.getNormalizedDistanceFromMainSequence(importPackages + layer);
+            //assertTrue(normalizedDistanceFromMainSequence <= 0.86, layer + " D -  | A + I - 1 | нормализованное расстояние от идеальной линии между (A=1, I=0) и (A=0, I=1) " + normalizedDistanceFromMainSequence);
+
+        }
+
+    }
+
+
+    @Test
     void shouldNotUseFieldInjectionTest() {
         JavaClasses importPackages = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -176,23 +235,29 @@ public class ArchunitTest {
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages(importPackages);
         ArchRule rule = classes().that().areNotAnonymousClasses().and()
-                .resideInAnyPackage(importPackages + ".acl", importPackages + "acl.*")
+                .resideInAnyPackage(Layer.ACL.getComponentIdentifier(importPackages))
                 .should()
-                .haveNameMatching(".*Mapper");
+                .haveSimpleNameEndingWith("Mapper");
 
         rule.check(javaClasses);
     }
 
     @Test
-    void shouldNotCreateMatchUIInGameMapperTest() {
+    void shouldNotCreateMatchInMatchMapperTest() {
         String importPackages = "ru.cbr.siberian.sea.battle";
-
         JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages(importPackages);
-        ArchRule rule = constructors().that().areDeclaredInClassesThat()
-                .areAssignableTo(MatchUI.class).should().onlyBeCalled().byClassesThat().haveNameNotMatching(GameMapper.class.getName());
+        ArchRule rule = noConstructors().that().areDeclaredInClassesThat()
+                .areAssignableTo(Match.class).should().onlyBeCalled().byClassesThat().haveNameMatching(MatchMapper.class.getName());
 
         rule.check(javaClasses);
     }
+    @Test
+    void plantUmlTest() {
+
+        final var myDiagram = getClass().getClassLoader().getResource("siberian-sea-battle-class-dependency.puml");
+        classes().should(adhereToPlantUmlDiagram(myDiagram, consideringAllDependencies()));
+    }
+
 }

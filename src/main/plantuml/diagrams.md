@@ -132,6 +132,35 @@ MatchService .. ServicePackage
 ```
 
 ```
+@startuml shouldFollowNamingConventionTest
+hide empty members
+set separator none
+skinparam componentStyle uml2
+
+skinparam component {
+BorderColor #grey
+BackgroundColor #white
+}
+
+skinparam class {
+BorderColor #grey
+BackgroundColor #white
+}
+
+package ru.cbr.siberian.sea.battle.acl {
+class MatchMapper
+class GameMapper
+class AclService
+}
+
+note "Неправильное имя у класса" as ServicePackage #crimson
+AclService .. ServicePackage
+
+
+@enduml
+```
+
+```
 @startuml implementBaseRequestMessageTest
 hide empty members
 skinparam componentStyle uml2
@@ -191,6 +220,61 @@ end note
 
 CreateGameRequestMessage ..|> BaseRequestMessage #green
 CreateUserRequestMessage ..|> BaseRequestMessage #green
+
+@enduml
+```
+
+```
+@startuml shouldNotUseFieldInjectionTest
+hide empty members
+skinparam componentStyle uml2
+
+skinparam component {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+skinparam class {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+class GameController <<concrete>> {
+{field} -matchService : MatchService
+}
+note right of GameController::matchService
+  поле не помечено аннотацией Autowired
+end note
+
+class MatchService <<concrete>> {
+
+}
+
+GameController --> MatchService #green
+
+
+@enduml
+```
+
+```
+@startuml shouldNotCreateMatchInMatchMapperTest
+hide empty members
+skinparam componentStyle uml2
+
+skinparam component {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+skinparam class {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+class MatchMapper <<concrete>> {
+}
+note "Запрет на вызов конструктора для класса Match" as creteMatch 
+MatchMapper .. creteMatch
 
 @enduml
 ```
@@ -345,6 +429,47 @@ endlegend
 ```
 
 ```
+@startuml lakosMetricsFeatureFirstTest
+skinparam componentStyle uml2
+skinparam component {
+  BorderColor #grey
+  BackgroundColor #white
+}
+skinparam legend {
+  BackgroundColor #lightyellow
+}
+
+[Component feature.first.sea.battle.game \nDependsOn: 1] as game
+[Component feature.first.sea.battle.match \nDependsOn: 5] as match
+[Component feature.first.sea.battle.player \nDependsOn: 3] as player
+[Component feature.first.sea.battle.common \nDependsOn: 1] as common
+[Component feature.first.sea.battle.configuration \nDependsOn: 1] as configuration
+[Component feature.first.sea.battle.notification \nDependsOn: 2] as notification
+
+
+notification --> common
+
+match --> common
+match --> player
+match --> game
+match --> notification
+
+player --> common
+player --> notification
+
+
+legend
+| <b>CCD</b>  | 13   |
+| <b>ACD</b>  | 2.166  |
+| <b>RACD</b> | 0.37  |
+| <b>NCCD</b> | 0.93 |
+endlegend
+
+@enduml
+```
+
+
+```
 @startuml componentDependencyMetricsTest
 skinparam componentStyle uml2
 skinparam component {
@@ -374,6 +499,38 @@ acl --> model
 @enduml
 ```
 
+```
+@startuml componentDependencyMetricsFeatureFirstTest
+skinparam componentStyle uml2
+skinparam component {
+  BorderColor #grey
+  BackgroundColor #white
+}
+skinparam legend {
+  BackgroundColor #lightyellow
+}
+
+
+[Component feature.first.sea.battle.game \nCe: 0\nCa: 1\nI: 0] as game
+[Component feature.first.sea.battle.match \nCe: 4\nCa: 0\nI:1] as match
+[Component feature.first.sea.battle.player \nCe: 2\nCa: 1\nI: 0.66] as player
+[Component feature.first.sea.battle.common \nCe: 0\nCa: 3\nI: 0] as common
+[Component feature.first.sea.battle.configuration \nCe: 0\nCa: 0\nI: 1] as configuration
+[Component feature.first.sea.battle.notification \nCe: 1\nCa: 2\nI: 0.33] as notification
+
+
+notification --> common
+
+match --> common
+match --> player
+match --> game
+match --> notification
+
+player --> common
+player --> notification
+
+@enduml
+```
 
 ```
 @startuml uml
@@ -402,14 +559,25 @@ ru.cbr.siberian.sea.battle.repository.MatchRepository --  ru.cbr.siberian.sea.ba
 
 </div>
 
+### Какие есть аналоги
+
+1. JQAssistant - Статический анализатор кода с основанном на Neo4J ()
+2. JDepend - Анализатор кода создает отчет качества кода (устарел, прародитель ArchUnit) 
+3. Classycle - Инструмент анализа классов и зависимостей (устарел)
+4. Degraph - Инструмент для визуализации и тестирования зависимостей классов и пакетов в приложениях (устарел)
+
+
+### plantuml - это универсальный инструмент, позволяющий быстро и просто создавать широкий спектр диаграмм
+ Создаем диаграмму для наглядности 
 
  ### Проверка от каких пакетов не зависит ACL
 ![asd](../../../target/generated-diagrams/aclPackageNoDependencyTest.svg)
 
 ```java
+String importPackages = "ru.cbr.siberian.sea.battle";
 JavaClasses importedClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages(importPackages);
 ArchRule rule = noClasses().that().resideInAPackage(Layer.ACL.getPackageName())
         .should()
         .dependOnClassesThat()
@@ -427,9 +595,10 @@ rule.check(importedClasses);
 ![asd](../../../target/generated-diagrams/aclPackageDependencyTest.svg)
 
 ```java
+String importPackages = "ru.cbr.siberian.sea.battle";
 JavaClasses importedClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages(importPackages);
 ArchRule rule = classes().that().resideInAPackage(Layer.ACL.getPackageName())
         .should()
         .dependOnClassesThat()
@@ -441,9 +610,10 @@ rule.check(importedClasses);
 ### Проверка кто зависит от пакета ACL
 ![asd](../../../target/generated-diagrams/aclPackageHaveDependencyTest.svg)
 ```java
+String importPackages = "ru.cbr.siberian.sea.battle";
 JavaClasses importedClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages(importPackages);
 ArchRule rule = classes().that().resideInAPackage(Layer.ACL.getPackageName())
         .should()
         .onlyHaveDependentClassesThat()
@@ -456,9 +626,10 @@ rule.check(importedClasses);
 ### Проверка кто не зависит от пакета ACL
 ![asd](../../../target/generated-diagrams/aclPackageHaveNoDependencyTest.svg)
 ```java
+String importPackages = "ru.cbr.siberian.sea.battle";
 JavaClasses importedClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages(importPackages);
 ArchRule rule = noClasses().that().resideInAPackage(Layer.ACL.getPackageName())
         .should()
         .onlyHaveDependentClassesThat()
@@ -475,9 +646,10 @@ ArchRule rule = noClasses().that().resideInAPackage(Layer.ACL.getPackageName())
 ### Проверка кто зависит от класса GameMapper
 ![asd](../../../target/generated-diagrams/matchMapperClassDependencyTest.svg)
 ```java
+String importPackages = "ru.cbr.siberian.sea.battle";
 JavaClasses importedClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages(importPackages);
 ArchRule rule = classes().that().haveNameMatching(MatchMapper.class.getName())
         .should()
         .onlyHaveDependentClassesThat().haveNameMatching(MatchService.class.getName());
@@ -486,12 +658,13 @@ rule.check(importedClasses);
 ```
 
 
-###  Проверка в пакете ACL все классы с постфиксом Mapper
+###  Проверка все классы с постфиксом Mapper находятся в пакете ACL
 ![asd](../../../target/generated-diagrams/gameMapperClassDependencyTest.svg)
 ```java
+String importPackages = "ru.cbr.siberian.sea.battle";
 JavaClasses importedClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages(importPackages);
 
 ArchRule rule = classes().that().haveSimpleNameEndingWith("Mapper")
         .should()
@@ -500,12 +673,29 @@ ArchRule rule = classes().that().haveSimpleNameEndingWith("Mapper")
 rule.check(importedClasses);
 ```
 
+###  Проверка в пакете ACL все классы с постфиксом Mapper
+![asd](../../../target/generated-diagrams/shouldFollowNamingConventionTest.svg)
+```java
+String importPackages = "ru.cbr.siberian.sea.battle";
+
+JavaClasses javaClasses = new ClassFileImporter()
+        .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+        .importPackages(importPackages);
+ArchRule rule = classes().that().resideInAnyPackage(Layer.ACL.getComponentIdentifier(importPackages))
+        .should()
+        .haveSimpleNameEndingWith("Mapper");
+
+        rule.check(javaClasses);
+```
+
+
 ###  Проверка все классы реализующие интерфейс BaseRequestMessage должны иметь постфикс RequestMessage
 ![asd](../../../target/generated-diagrams/implementBaseRequestMessageTest.svg)
 ```java
+String importPackages = "ru.cbr.siberian.sea.battle";
 JavaClasses importedClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages(importPackages);
 ArchRule rule = classes().that().implement(BaseRequestMessage.class)
         .should().haveSimpleNameEndingWith("RequestMessage");
 
@@ -515,14 +705,42 @@ rule.check(importedClasses);
 ###  Проверка все поля классов реализующие интерфейс BaseRequestMessage используют аннотации проверки NotBlank или NotNull
 ![asd](../../../target/generated-diagrams/annotationBaseRequestMessageTest.svg)
 ```java
+String importPackages = "ru.cbr.siberian.sea.battle";
 JavaClasses importedClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages(importPackages);
 ArchRule rule = classes().that().areAssignableTo(BaseRequestMessage.class)
         .should().onlyAccessFieldsThat(are(annotatedWith(NotBlank.class)).or(annotatedWith(NotNull.class)));
 
 rule.check(importedClasses);
 ```
+
+
+###  Проверка на наличие аннотаций Autowired у полей класса
+![asd](../../../target/generated-diagrams/shouldNotUseFieldInjectionTest.svg)
+```java
+JavaClasses importPackages = new ClassFileImporter()
+        .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+        .importPackages("ru.cbr.siberian.sea.battle");
+ArchRule rule = noFields().should()
+        .beAnnotatedWith(Autowired.class);
+
+rule.check(importPackages);
+```
+
+###  Проверка на отсутствие конструктора Match в MatchMapper
+![asd](../../../target/generated-diagrams/shouldNotCreateMatchInMatchMapperTest.svg)
+```java
+String importPackages = "ru.cbr.siberian.sea.battle";
+JavaClasses javaClasses = new ClassFileImporter()
+        .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+        .importPackages(importPackages);
+ArchRule rule = noConstructors().that().areDeclaredInClassesThat()
+        .areAssignableTo(Match.class).should().onlyBeCalled().byClassesThat().haveNameMatching(MatchMapper.class.getName());
+
+rule.check(javaClasses);
+```
+
 ###  Проверка слоев
 ![asd](../../../target/generated-diagrams/layeredTest.svg)
 ```java
@@ -566,9 +784,10 @@ layeredArchitecture.check(importPackages);
 ###  Проверка циклов
 ![asd](../../../target/generated-diagrams/beFreeOfCyclesTest.svg)
 ```java
+String importPackages = "ru.cbr.siberian.sea.battle";
 JavaClasses importPackages = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages(importPackages);
 SliceRule sliceRule = slices()
         .matching("ru.cbr.siberian.sea.battle.(*)..")
         .should()
@@ -576,32 +795,52 @@ SliceRule sliceRule = slices()
 sliceRule.check(importPackages);
 ```
 
-###  Проверка метрик Джона Лакоса 
+###  Проверка метрик Джона Лакоса на примере layer-first
 ![asd](../../../target/generated-diagrams/lakosMetricsTest.svg)
 ```java
- JavaClasses importPackages = new ClassFileImporter()
+String importPackages = "ru.cbr.siberian.sea.battle";
+ JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages(importPackages);
 
-Set<JavaPackage> subpackages = importPackages.getPackage("ru.cbr.siberian.sea.battle").getSubpackages();
+Set<JavaPackage> subpackages = javaClasses.getPackage(importPackages).getSubpackages();
 MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
 LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(metricsComponents);
 
-assertTrue(metrics.getCumulativeComponentDependency() <= 21, "CCD - Сумма зависимомтей всех компонентов " + metrics.getCumulativeComponentDependency());
+assertTrue(metrics.getCumulativeComponentDependency() <= 21, "CCD - Сумма зависимостей всех компонентов " + metrics.getCumulativeComponentDependency());
 assertTrue(metrics.getAverageComponentDependency() <= 3, "ACD - CCD деленная на количество всех компонентов " + metrics.getAverageComponentDependency());
 ```
 
-###  Проверка метрик основе книги Роберта Мартина «Чистая архитектура»
+###  Проверка метрик Джона Лакоса на примере feature-first
+![asd](../../../target/generated-diagrams/lakosMetricsFeatureFirstTest.svg)
+```java
+String importPackages = "ru.cbr.siberian.feature.first.sea.battle";
+JavaClasses javaClasses = new ClassFileImporter()
+        .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+        .importPackages(importPackages);
+
+Set<JavaPackage> subpackages = importPackages.getPackage(importPackages).getSubpackages();
+MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
+LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(metricsComponents);
+
+assertTrue(metrics.getCumulativeComponentDependency() <= 15, "CCD - Сумма зависимостей всех компонентов " + metrics.getCumulativeComponentDependency());
+assertTrue(metrics.getAverageComponentDependency() <= 2.17, "ACD - CCD деленная на количество всех компонентов " + metrics.getAverageComponentDependency());
+```
+
+
+https://habr.com/ru/articles/772802/
+###  Проверка метрик Роберта Мартина «Чистая архитектура» на примере layer-first
 ![asd](../../../target/generated-diagrams/componentDependencyMetricsTest.svg)
 
 В структуре компонентов нестабильные компоненты должны располагаться сверху, а более стабильные — снизу,
 Чем больше I тем не стабильнее компонент.
 ```java
+String importPackages = "ru.cbr.siberian.sea.battle";
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
         .importPackages(importPackages);
 
-Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.sea.battle").getSubpackages();
+Set<JavaPackage> subpackages = javaClasses.getPackage(importPackages).getSubpackages();
 MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
 ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(metricsComponents);
 
@@ -615,6 +854,30 @@ double instability = metrics.getInstability(Layer.ACL.getComponentIdentifier());
 assertTrue(instability <= 0.7, "I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям (нестабильность)" + instability);
 ```
 
+###  Проверка метрик Роберта Мартина «Чистая архитектура» на примере feature-first
+![asd](../../../target/generated-diagrams/componentDependencyMetricsFeatureFirstTest.svg)
+
+В структуре компонентов нестабильные компоненты должны располагаться сверху, а более стабильные — снизу,
+Чем больше I тем не стабильнее компонент.
+```java
+String importPackages = "ru.cbr.siberian.feature.first.sea.battle";
+JavaClasses javaClasses = new ClassFileImporter()
+        .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+        .importPackages(importPackages);
+
+Set<JavaPackage> subpackages = javaClasses.getPackage(importPackages).getSubpackages();
+MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
+ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(metricsComponents);
+
+int efferentCoupling = metrics.getEfferentCoupling(Feature.Game.getComponentIdentifier());
+assertTrue(efferentCoupling <= 0, "Ce - показывает зависимости пакета от внешних пакетов (исходящие зависимости)" + efferentCoupling);
+
+int afferentCoupling = metrics.getAfferentCoupling(Feature.Game.getComponentIdentifier());
+assertTrue(afferentCoupling <= 1, "Ca - показывает зависимости внешних пакетов от указанного пакета (входящие зависимости)" + afferentCoupling);
+
+double instability = metrics.getInstability(Feature.Game.getComponentIdentifier());
+assertTrue(instability <= 0, "I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям (нестабильность)" + instability);
+```
 
 
 ![asd](../../../target/generated-diagrams/uml.svg)
