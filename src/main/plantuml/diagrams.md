@@ -557,6 +557,39 @@ ru.cbr.siberian.sea.battle.repository.MatchRepository --  ru.cbr.siberian.sea.ba
 @enduml
 ```
 
+
+```
+@startuml uml_real
+skinparam componentStyle uml2
+skinparam component {
+BorderColor #grey
+BackgroundColor #white
+}
+
+[controller] <<..ru.cbr.siberian.sea.battle.controller..>>
+[dao] <<..ru.cbr.siberian.sea.battle.dao..>>
+[model] <<..ru.cbr.siberian.sea.battle.model..>>
+[service] <<..ru.cbr.siberian.sea.battle.service..>>
+[acl] <<..ru.cbr.siberian.sea.battle.acl..>>
+[repository] <<..cbr.siberian.sea.battle.repository..>>
+
+[controller] --> [model]
+[controller] --> [service]
+
+[service] --> [model]
+[service] --> [acl]
+[service] --> [repository]
+
+[dao] --> [model]
+
+[repository] --> [dao]
+[repository] --> [model]
+
+[acl] --> [model]
+[acl] --> [dao]
+
+@enduml
+```
 </div>
 
 ### Какие есть аналоги
@@ -881,3 +914,4 @@ assertTrue(instability <= 0, "I - Ce / (Ca + Ce), т.е. отношение ис
 
 
 ![asd](../../../target/generated-diagrams/uml.svg)
+![asd](../../../target/generated-diagrams/uml_real.svg)

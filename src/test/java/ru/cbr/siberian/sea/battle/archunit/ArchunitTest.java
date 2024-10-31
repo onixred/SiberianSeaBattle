@@ -6,6 +6,7 @@ import com.tngtech.archunit.core.domain.JavaPackage;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
+import com.tngtech.archunit.lang.syntax.elements.ClassesShouldConjunction;
 import com.tngtech.archunit.library.Architectures;
 import com.tngtech.archunit.library.dependencies.SliceRule;
 import com.tngtech.archunit.library.metrics.ArchitectureMetrics;
@@ -29,6 +30,7 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
 import static com.tngtech.archunit.library.plantuml.rules.PlantUmlArchCondition.Configuration.consideringAllDependencies;
+import static com.tngtech.archunit.library.plantuml.rules.PlantUmlArchCondition.Configuration.consideringOnlyDependenciesInDiagram;
 import static com.tngtech.archunit.library.plantuml.rules.PlantUmlArchCondition.adhereToPlantUmlDiagram;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -255,9 +257,14 @@ public class ArchunitTest {
     }
     @Test
     void plantUmlTest() {
-
+        String importPackages = "ru.cbr.siberian.sea.battle";
+        JavaClasses javaClasses = new ClassFileImporter()
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                .importPackages(importPackages);
         final var myDiagram = getClass().getClassLoader().getResource("siberian-sea-battle-class-dependency.puml");
-        classes().should(adhereToPlantUmlDiagram(myDiagram, consideringAllDependencies()));
+        var ss =  classes().should(adhereToPlantUmlDiagram(myDiagram, consideringOnlyDependenciesInDiagram()));
+
+        ss.check(javaClasses);
     }
 
 }
