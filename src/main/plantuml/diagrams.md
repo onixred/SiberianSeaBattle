@@ -483,10 +483,10 @@ skinparam legend {
 [Component ru.cbr.siberian.sea.battle.acl \nCe: 2\nCa: 1\nI: 0.66] as acl
 [Component ru.cbr.siberian.sea.battle.configuration \nCe: 0\nCa: 0\nI: 1] as configuration
 [Component ru.cbr.siberian.sea.battle.controller \nCe: 2\nCa: 0\nI: 1] as controller
-[Component ru.cbr.siberian.sea.battle.dao \nCe: 0\nCa: 2\nI: 0] as dao
+[Component ru.cbr.siberian.sea.battle.dao \nCe: 1\nCa: 2\nI: 0.33] as dao
 [Component ru.cbr.siberian.sea.battle.model \nCe: 0\nCa: 5\nI: 0] as model
-[Component ru.cbr.siberian.sea.battle.repository \nCe: 1\nCa: 1\nI: 0.5] as repository
-[Component ru.cbr.siberian.sea.battle.service \nCe: 2\nCa: 1\nI: 0.75] as service
+[Component ru.cbr.siberian.sea.battle.repository \nCe: 2\nCa: 1\nI: 0.66] as repository
+[Component ru.cbr.siberian.sea.battle.service \nCe: 3\nCa: 1\nI: 0.75] as service
 
 
 controller --> service

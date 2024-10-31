@@ -36,7 +36,6 @@ import ru.cbr.siberian.sea.battle.model.Player;
 public class ActionHistoryMapper {
 
     private final ModelMapper modelMapper;
-
     public ActionHistoryDao creteDao(Match match, Player player, int x, int y) {
         MatchDao matchDao = modelMapper.map(match, MatchDao.class);
         PlayerDao playerDao = modelMapper.map(player, PlayerDao.class);

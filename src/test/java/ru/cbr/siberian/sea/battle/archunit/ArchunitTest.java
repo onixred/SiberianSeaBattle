@@ -166,13 +166,13 @@ public class ArchunitTest {
         for(Layer layer: Layer.values()) {
             int efferentCoupling = metrics.getEfferentCoupling(layer.getComponentIdentifier(importPackages));
             assertTrue(efferentCoupling <= 3, layer + " Ce - показывает зависимости пакета от внешних пакетов (исходящие зависимости) " + efferentCoupling);
-
+            System.out.println(layer + " Ce - показывает зависимости пакета от внешних пакетов (исходящие зависимости) " + efferentCoupling);
             int afferentCoupling = metrics.getAfferentCoupling(layer.getComponentIdentifier(importPackages));
             assertTrue(afferentCoupling <= 5, layer + " Ca - показывает зависимости внешних пакетов от указанного пакета (входящие зависимости) " + afferentCoupling);
-
+            System.out.println(layer + " Ca - показывает зависимости внешних пакетов от указанного пакета (входящие зависимости) " + afferentCoupling);
             double instability = metrics.getInstability(layer.getComponentIdentifier(importPackages));
             assertTrue(instability <= 1, layer + " I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям " + instability);
-
+            System.out.println(layer + " I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям " + instability);
             double abstractness = metrics.getAbstractness(layer.getComponentIdentifier(importPackages));
             assertTrue(abstractness <= 1, layer + " A - num(abstract_classes) / num(all_classes) в пакете " + abstractness);
 
