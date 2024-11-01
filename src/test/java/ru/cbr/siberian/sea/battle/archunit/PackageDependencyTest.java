@@ -35,9 +35,10 @@ public class PackageDependencyTest {
     @Test
     @DisplayName("Проверка от каких пакетов не зависит ACL")
     void aclPackageNoDependencyTest() {
-        JavaClasses importedClasses = new ClassFileImporter()
+        String importPackages = "ru.cbr.siberian.sea.battle";
+        JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages("ru.cbr.siberian.sea.battle");
+                .importPackages(importPackages);
         ArchRule rule = noClasses().that().resideInAPackage(Layer.ACL.getPackageName())
                 .should()
                 .dependOnClassesThat()
@@ -48,44 +49,47 @@ public class PackageDependencyTest {
                         Layer.SERVICE.getPackageName()
                         );
 
-        rule.check(importedClasses);
+        rule.check(javaClasses);
     }
 
     @Test
     @DisplayName("Проверка от каких пакетов зависит ACL")
     void aclPackageDependencyTest() {
-        JavaClasses importedClasses = new ClassFileImporter()
+        String importPackages = "ru.cbr.siberian.sea.battle";
+        JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages("ru.cbr.siberian.sea.battle");
+                .importPackages(importPackages);
         ArchRule rule = classes().that().resideInAPackage(Layer.ACL.getPackageName())
                 .should()
                 .dependOnClassesThat()
                 .resideInAnyPackage(Layer.MODEL.getPackageName(), Layer.DAO.getPackageName());
 
-        rule.check(importedClasses);
+        rule.check(javaClasses);
     }
 
     @Test
     @DisplayName("Проверка кто зависит от пакета ACL")
     void aclPackageHaveDependencyTest() {
-        JavaClasses importedClasses = new ClassFileImporter()
+        String importPackages = "ru.cbr.siberian.sea.battle";
+        JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages("ru.cbr.siberian.sea.battle");
+                .importPackages(importPackages);
         ArchRule rule = classes().that().resideInAPackage(Layer.ACL.getPackageName())
                 .should()
                 .onlyHaveDependentClassesThat()
                 .resideInAnyPackage(
                         Layer.SERVICE.getPackageName());
 
-        rule.check(importedClasses);
+        rule.check(javaClasses);
     }
 
     @Test
     @DisplayName("Проверка кто не зависит от пакета ACL")
     void aclPackageHaveNoDependencyTest() {
-        JavaClasses importedClasses = new ClassFileImporter()
+        String importPackages = "ru.cbr.siberian.sea.battle";
+        JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages("ru.cbr.siberian.sea.battle");
+                .importPackages(importPackages);
         ArchRule rule = noClasses().that().resideInAPackage(Layer.ACL.getPackageName())
                 .should()
                 .onlyHaveDependentClassesThat()
@@ -94,7 +98,7 @@ public class PackageDependencyTest {
                         Layer.DAO.getPackageName(),
                         Layer.MODEL.getPackageName(),
                         Layer.REPOSITORY.getPackageName());
-        rule.check(importedClasses);
+        rule.check(javaClasses);
     }
 }
 

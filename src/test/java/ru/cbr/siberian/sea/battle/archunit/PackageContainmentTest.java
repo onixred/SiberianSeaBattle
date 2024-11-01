@@ -35,13 +35,14 @@ public class PackageContainmentTest {
     @Test
     @DisplayName("Проверка в пакете ACL все классы с постфиксом Mapper")
     void gameMapperClassDependencyTest() {
-        JavaClasses importedClasses = new ClassFileImporter()
+        String importPackages = "ru.cbr.siberian.sea.battle";
+        JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages("ru.cbr.siberian.sea.battle");
+                .importPackages(importPackages);
 
         ArchRule rule = classes().that().haveSimpleNameEndingWith("Mapper")
                 .should()
                 .resideInAPackage(Layer.ACL.getPackageName());
 
-        rule.check(importedClasses);
+        rule.check(javaClasses);
     }}

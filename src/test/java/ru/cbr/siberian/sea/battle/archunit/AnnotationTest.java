@@ -37,12 +37,14 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
  */
 public class AnnotationTest {
 
+
     @Test
     @DisplayName("Проверка все поля классов реализующие интерфейс BaseRequestMessage используют аннотации проверки NotBlank или NotNull")
     void annotationBaseRequestMessageTest() {
+        String importPackages = "ru.cbr.siberian.sea.battle";
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages("ru.cbr.siberian.sea.battle");
+                .importPackages(importPackages);
         ArchRule rule = classes().that().areAssignableTo(BaseRequestMessage.class)
                 .should().onlyAccessFieldsThat(are(annotatedWith(NotBlank.class)).or(annotatedWith(NotNull.class)));
 

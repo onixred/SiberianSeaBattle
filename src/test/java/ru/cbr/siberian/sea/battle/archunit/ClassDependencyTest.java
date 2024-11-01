@@ -37,13 +37,14 @@ public class ClassDependencyTest {
     @Test
     @DisplayName("Проверка кто зависит от класса GameMapper")
     void matchMapperClassDependencyTest() {
-        JavaClasses importedClasses = new ClassFileImporter()
+        String importPackages = "ru.cbr.siberian.sea.battle";
+        JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages("ru.cbr.siberian.sea.battle");
+                .importPackages(importPackages);
         ArchRule rule = classes().that().haveNameMatching(MatchMapper.class.getName())
                 .should()
                 .onlyHaveDependentClassesThat().haveNameMatching(MatchService.class.getName());
 
-        rule.check(importedClasses);
+        rule.check(javaClasses);
     }
 }

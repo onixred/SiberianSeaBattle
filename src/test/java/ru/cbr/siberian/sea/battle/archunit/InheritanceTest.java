@@ -15,12 +15,13 @@ public class InheritanceTest {
     @Test
     @DisplayName("Проверка все классы реализующие интерфейс BaseRequestMessage должны иметь постфикс RequestMessage")
     void implementBaseRequestMessageTest() {
-        JavaClasses importedClasses = new ClassFileImporter()
+        String importPackages = "ru.cbr.siberian.sea.battle";
+        JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages("ru.cbr.siberian.sea.battle");
+                .importPackages(importPackages);
         ArchRule rule = classes().that().implement(BaseRequestMessage.class)
                 .should().haveSimpleNameEndingWith("RequestMessage");
 
-        rule.check(importedClasses);
+        rule.check(javaClasses);
     }
 }
