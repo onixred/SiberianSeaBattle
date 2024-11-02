@@ -592,6 +592,8 @@ BackgroundColor #white
 ```
 </div>
 
+
+
 ### Какие есть аналоги
 
 1. JQAssistant - Статический анализатор кода с основанном на Neo4J ()
@@ -706,7 +708,8 @@ rule.check(javaClasses);
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
         .importPackages("ru.cbr.siberian.sea.battle");
-ArchRule rule = classes().that().resideInAnyPackage(Layer.ACL.getComponentIdentifier("ru.cbr.siberian.sea.battle"))
+ArchRule rule = classes().that()
+        .resideInAnyPackage(Layer.ACL.getComponentIdentifier("ru.cbr.siberian.sea.battle"))
         .should()
         .haveSimpleNameEndingWith("Mapper");
 
@@ -733,7 +736,8 @@ JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
         .importPackages("ru.cbr.siberian.sea.battle");
 ArchRule rule = classes().that().areAssignableTo(BaseRequestMessage.class)
-        .should().onlyAccessFieldsThat(are(annotatedWith(NotBlank.class)).or(annotatedWith(NotNull.class)));
+        .should().onlyAccessFieldsThat(are(annotatedWith(NotBlank.class))
+        .or(annotatedWith(NotNull.class)));
 
 rule.check(javaClasses);
 ```
@@ -758,7 +762,9 @@ JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
         .importPackages("ru.cbr.siberian.sea.battle");
 ArchRule rule = noConstructors().that().areDeclaredInClassesThat()
-        .areAssignableTo(Match.class).should().onlyBeCalled().byClassesThat().haveNameMatching(MatchMapper.class.getName());
+        .areAssignableTo(Match.class)
+        .should().onlyBeCalled().byClassesThat()
+        .haveNameMatching(MatchMapper.class.getName());
 
 rule.check(javaClasses);
 ```
@@ -771,7 +777,8 @@ JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
         .importPackages("ru.cbr.siberian.sea.battle");
 
-Architectures.LayeredArchitecture layeredArchitecture = layeredArchitecture().consideringAllDependencies()
+Architectures.LayeredArchitecture layeredArchitecture = layeredArchitecture()
+        .consideringAllDependencies()
         .layer("acl").definedBy("ru.cbr.siberian.sea.battle.acl..")
         .layer("configuration").definedBy("ru.cbr.siberian.sea.battle.configuration..")
         .layer("controller").definedBy("ru.cbr.siberian.sea.battle.controller..")
@@ -806,12 +813,15 @@ JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
         .importPackages("ru.cbr.siberian.sea.battle");
 
-Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.sea.battle").getSubpackages();
-MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
-LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(metricsComponents);
+Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.sea.battle")
+        .getSubpackages();
+MetricsComponents<JavaClass> components = MetricsComponents.fromPackages(subpackages);
+LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(components);
 
-assertTrue(metrics.getCumulativeComponentDependency() <= 21, "CCD - Сумма зависимостей всех компонентов " + metrics.getCumulativeComponentDependency());
-assertTrue(metrics.getAverageComponentDependency() <= 3, "ACD - CCD деленная на количество всех компонентов " + metrics.getAverageComponentDependency());
+assertTrue(metrics.getCumulativeComponentDependency() <= 21, 
+        "CCD - Сумма зависимостей всех компонентов " + metrics.getCumulativeComponentDependency());
+assertTrue(metrics.getAverageComponentDependency() <= 3, 
+        "ACD - CCD деленная на количество всех компонентов " + metrics.getAverageComponentDependency());
 ```
 
 ###  Проверка метрик Джона Лакоса на примере feature-first
@@ -821,12 +831,15 @@ JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
         .importPackages("ru.cbr.siberian.feature.first.sea.battle");
 
-Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.feature.first.sea.battle").getSubpackages();
-MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
-LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(metricsComponents);
+Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.feature.first.sea.battle")
+        .getSubpackages();
+MetricsComponents<JavaClass> components = MetricsComponents.fromPackages(subpackages);
+LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(components);
 
-assertTrue(metrics.getCumulativeComponentDependency() <= 15, "CCD - Сумма зависимостей всех компонентов " + metrics.getCumulativeComponentDependency());
-assertTrue(metrics.getAverageComponentDependency() <= 2.17, "ACD - CCD деленная на количество всех компонентов " + metrics.getAverageComponentDependency());
+assertTrue(metrics.getCumulativeComponentDependency() <= 15, 
+        "CCD - Сумма зависимостей всех компонентов " + metrics.getCumulativeComponentDependency());
+assertTrue(metrics.getAverageComponentDependency() <= 2.17, 
+        "ACD - CCD деленная на количество всех компонентов " + metrics.getAverageComponentDependency());
 ```
 
 
@@ -841,18 +854,22 @@ JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
         .importPackages("ru.cbr.siberian.sea.battle");
 
-Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.sea.battle").getSubpackages();
-MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
-ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(metricsComponents);
+Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.sea.battle")
+        .getSubpackages();
+MetricsComponents<JavaClass> components = MetricsComponents.fromPackages(subpackages);
+ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(components);
 
 int efferentCoupling = metrics.getEfferentCoupling(Layer.ACL.getComponentIdentifier());
-assertTrue(efferentCoupling <= 2, "Ce - показывает зависимости пакета от внешних пакетов (исходящие зависимости)" + efferentCoupling);
+assertTrue(efferentCoupling <= 2, 
+           "Ce - показывает зависимости пакета от внешних пакетов" + efferentCoupling);
 
 int afferentCoupling = metrics.getAfferentCoupling(Layer.ACL.getComponentIdentifier());
-assertTrue(afferentCoupling <= 1, "Ca - показывает зависимости внешних пакетов от указанного пакета (входящие зависимости)" + afferentCoupling);
+assertTrue(afferentCoupling <= 1, 
+           "Ca - показывает зависимости внешних пакетов от указанного пакета" + afferentCoupling);
 
 double instability = metrics.getInstability(Layer.ACL.getComponentIdentifier());
-assertTrue(instability <= 0.7, "I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям (нестабильность)" + instability);
+assertTrue(instability <= 0.7, 
+           "I - Ce / (Ca + Ce), (нестабильность)" + instability);
 ```
 
 ###  Проверка метрик Роберта Мартина «Чистая архитектура» на примере feature-first
@@ -865,18 +882,22 @@ JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
         .importPackages("ru.cbr.siberian.feature.first.sea.battle");
 
-Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.feature.first.sea.battle").getSubpackages();
-MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
-ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(metricsComponents);
+Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.feature.first.sea.battle")
+        .getSubpackages();
+MetricsComponents<JavaClass> components = MetricsComponents.fromPackages(subpackages);
+ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(components);
 
 int efferentCoupling = metrics.getEfferentCoupling(Feature.Game.getComponentIdentifier());
-assertTrue(efferentCoupling <= 0, "Ce - показывает зависимости пакета от внешних пакетов (исходящие зависимости)" + efferentCoupling);
+assertTrue(efferentCoupling <= 0, 
+           "Ce - показывает зависимости пакета от внешних пакетов" + efferentCoupling);
 
 int afferentCoupling = metrics.getAfferentCoupling(Feature.Game.getComponentIdentifier());
-assertTrue(afferentCoupling <= 1, "Ca - показывает зависимости внешних пакетов от указанного пакета (входящие зависимости)" + afferentCoupling);
+assertTrue(afferentCoupling <= 1, 
+           "Ca - показывает зависимости внешних пакетов от указанного пакета" + afferentCoupling);
 
 double instability = metrics.getInstability(Feature.Game.getComponentIdentifier());
-assertTrue(instability <= 0, "I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям (нестабильность)" + instability);
+assertTrue(instability <= 0, 
+           "I - Ce / (Ca + Ce), (нестабильность)" + instability);
 ```
 
 
