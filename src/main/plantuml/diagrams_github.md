@@ -882,4 +882,5 @@ assertTrue(instability <= 0, "I - Ce / (Ca + Ce), т.е. отношение ис
 
 ![asd](./generated-diagrams/uml.svg)
 реальные
+
 ![asd](./generated-diagrams/uml_real.svg)
