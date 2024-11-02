@@ -604,7 +604,7 @@ BackgroundColor #white
  Создаем диаграмму для наглядности 
 
  ### Проверка от каких пакетов не зависит ACL
-![asd](../../../target/generated-diagrams/aclPackageNoDependencyTest.svg)
+![asd](./generated-diagrams/aclPackageNoDependencyTest.svg)
 
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
@@ -624,7 +624,7 @@ rule.check(javaClasses);
 ```
 
 ### Проверка от каких пакетов зависит ACL
-![asd](../../../target/generated-diagrams/aclPackageDependencyTest.svg)
+![asd](./generated-diagrams/aclPackageDependencyTest.svg)
 
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
@@ -639,7 +639,7 @@ rule.check(javaClasses);
 ```
 
 ### Проверка кто зависит от пакета ACL
-![asd](../../../target/generated-diagrams/aclPackageHaveDependencyTest.svg)
+![asd](./generated-diagrams/aclPackageHaveDependencyTest.svg)
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -654,7 +654,7 @@ rule.check(javaClasses);
 ```
 
 ### Проверка кто не зависит от пакета ACL
-![asd](../../../target/generated-diagrams/aclPackageHaveNoDependencyTest.svg)
+![asd](./generated-diagrams/aclPackageHaveNoDependencyTest.svg)
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -673,7 +673,7 @@ ArchRule rule = noClasses().that().resideInAPackage(Layer.ACL.getPackageName())
 ```
 
 ### Проверка кто зависит от класса GameMapper
-![asd](../../../target/generated-diagrams/matchMapperClassDependencyTest.svg)
+![asd](./generated-diagrams/matchMapperClassDependencyTest.svg)
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -687,7 +687,7 @@ rule.check(javaClasses);
 
 
 ###  Проверка все классы с постфиксом Mapper находятся в пакете ACL
-![asd](../../../target/generated-diagrams/gameMapperClassDependencyTest.svg)
+![asd](./generated-diagrams/gameMapperClassDependencyTest.svg)
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -701,7 +701,7 @@ rule.check(javaClasses);
 ```
 
 ###  Проверка в пакете ACL все классы с постфиксом Mapper
-![asd](../../../target/generated-diagrams/shouldFollowNamingConventionTest.svg)
+![asd](./generated-diagrams/shouldFollowNamingConventionTest.svg)
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -715,7 +715,7 @@ rule.check(javaClasses);
 
 
 ###  Проверка все классы реализующие интерфейс BaseRequestMessage должны иметь постфикс RequestMessage
-![asd](../../../target/generated-diagrams/implementBaseRequestMessageTest.svg)
+![asd](./generated-diagrams/implementBaseRequestMessageTest.svg)
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -727,7 +727,7 @@ rule.check(javaClasses);
 ```
 
 ###  Проверка все поля классов реализующие интерфейс BaseRequestMessage используют аннотации проверки NotBlank или NotNull
-![asd](../../../target/generated-diagrams/annotationBaseRequestMessageTest.svg)
+![asd](./generated-diagrams/annotationBaseRequestMessageTest.svg)
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -740,7 +740,7 @@ rule.check(javaClasses);
 
 
 ###  Проверка на наличие аннотаций Autowired у полей класса
-![asd](../../../target/generated-diagrams/shouldNotUseFieldInjectionTest.svg)
+![asd](./generated-diagrams/shouldNotUseFieldInjectionTest.svg)
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -752,7 +752,7 @@ rule.check(javaClasses);
 ```
 
 ###  Проверка на отсутствие конструктора Match в MatchMapper
-![asd](../../../target/generated-diagrams/shouldNotCreateMatchInMatchMapperTest.svg)
+![asd](./generated-diagrams/shouldNotCreateMatchInMatchMapperTest.svg)
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -764,7 +764,7 @@ rule.check(javaClasses);
 ```
 
 ###  Проверка слоев
-![asd](../../../target/generated-diagrams/layeredTest.svg)
+![asd](./generated-diagrams/layeredTest.svg)
 ```java
 
 JavaClasses javaClasses = new ClassFileImporter()
@@ -787,7 +787,7 @@ layeredArchitecture.check(javaClasses);
 ```
 
 ###  Проверка циклов
-![asd](../../../target/generated-diagrams/beFreeOfCyclesTest.svg)
+![asd](./generated-diagrams/beFreeOfCyclesTest.svg)
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -800,7 +800,7 @@ sliceRule.check(javaClasses);
 ```
 
 ###  Проверка метрик Джона Лакоса на примере layer-first
-![asd](../../../target/generated-diagrams/lakosMetricsTest.svg)
+![asd](./generated-diagrams/lakosMetricsTest.svg)
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -815,7 +815,7 @@ assertTrue(metrics.getAverageComponentDependency() <= 3, "ACD - CCD деленн
 ```
 
 ###  Проверка метрик Джона Лакоса на примере feature-first
-![asd](../../../target/generated-diagrams/lakosMetricsFeatureFirstTest.svg)
+![asd](./generated-diagrams/lakosMetricsFeatureFirstTest.svg)
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -832,7 +832,7 @@ assertTrue(metrics.getAverageComponentDependency() <= 2.17, "ACD - CCD деле�
 
 https://habr.com/ru/articles/772802/
 ###  Проверка метрик Роберта Мартина «Чистая архитектура» на примере layer-first
-![asd](../../../target/generated-diagrams/componentDependencyMetricsTest.svg)
+![asd](./generated-diagrams/componentDependencyMetricsTest.svg)
 
 В структуре компонентов нестабильные компоненты должны располагаться сверху, а более стабильные — снизу,
 Чем больше I тем не стабильнее компонент.
@@ -856,7 +856,7 @@ assertTrue(instability <= 0.7, "I - Ce / (Ca + Ce), т.е. отношение и
 ```
 
 ###  Проверка метрик Роберта Мартина «Чистая архитектура» на примере feature-first
-![asd](../../../target/generated-diagrams/componentDependencyMetricsFeatureFirstTest.svg)
+![asd](./generated-diagrams/componentDependencyMetricsFeatureFirstTest.svg)
 
 В структуре компонентов нестабильные компоненты должны располагаться сверху, а более стабильные — снизу,
 Чем больше I тем не стабильнее компонент.
@@ -880,6 +880,6 @@ assertTrue(instability <= 0, "I - Ce / (Ca + Ce), т.е. отношение ис
 ```
 
 
-![asd](../../../target/generated-diagrams/uml.svg)
+![asd](./generated-diagrams/uml.svg)
 реальные
-![asd](../../../target/generated-diagrams/uml_real.svg)
+![asd](./generated-diagrams/uml_real.svg)
