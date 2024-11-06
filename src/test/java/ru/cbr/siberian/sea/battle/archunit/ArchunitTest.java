@@ -6,6 +6,7 @@ import com.tngtech.archunit.core.domain.JavaPackage;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
+import com.tngtech.archunit.lang.syntax.elements.ClassesShouldConjunction;
 import com.tngtech.archunit.library.Architectures;
 import com.tngtech.archunit.library.dependencies.SliceRule;
 import com.tngtech.archunit.library.metrics.ArchitectureMetrics;
@@ -269,9 +270,9 @@ public class ArchunitTest {
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages(IMPORT_PACKAGES);
         final var myDiagram = getClass().getClassLoader().getResource("siberian-sea-battle-class-dependency.puml");
-        var ss = classes().should(adhereToPlantUmlDiagram(myDiagram, consideringOnlyDependenciesInDiagram()));
+        ClassesShouldConjunction conjunction = classes().should(adhereToPlantUmlDiagram(myDiagram, consideringOnlyDependenciesInDiagram()));
 
-        ss.check(javaClasses);
+        conjunction.check(javaClasses);
     }
 
 }

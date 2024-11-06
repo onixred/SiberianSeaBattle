@@ -903,5 +903,14 @@ assertTrue(instability <= 0,
 
 ![asd](./generated-diagrams/uml.svg)
 реальные
+```java
+JavaClasses javaClasses = new ClassFileImporter()
+        .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+        .importPackages(IMPORT_PACKAGES);
+final var diagram = getClass().getClassLoader().getResource("siberian-sea-battle.puml");
+ClassesShouldConjunction conjunction = classes()
+        .should(adhereToPlantUmlDiagram(diagram, consideringOnlyDependenciesInDiagram()));
 
+conjunction.check(javaClasses);
+```
 ![asd](./generated-diagrams/uml_real.svg)
