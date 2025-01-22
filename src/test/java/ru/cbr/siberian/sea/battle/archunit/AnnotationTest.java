@@ -23,11 +23,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import ru.cbr.siberian.sea.battle.model.message.BaseRequestMessage;
 
 import static com.tngtech.archunit.core.domain.properties.CanBeAnnotated.Predicates.annotatedWith;
 import static com.tngtech.archunit.lang.conditions.ArchPredicates.are;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
 
 /**
  * Description:
@@ -49,5 +51,23 @@ public class AnnotationTest {
                 .should().onlyAccessFieldsThat(are(annotatedWith(NotBlank.class)).or(annotatedWith(NotNull.class)));
 
         rule.check(importedClasses);
+    }
+
+    @Test
+    @DisplayName("Проверка во всех классах в пакете controller на методах должна стоять аннотация MessageMapping")
+    void annotationMessageTest() {
+        String importPackages = "ru.cbr.siberian.sea.battle";
+        JavaClasses importedClasses = new ClassFileImporter()
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                .importPackages(importPackages);
+
+        ArchRule rule = methods().that().arePublic()
+                        .and().areDeclaredInClassesThat().resideInAPackage("..controller..")
+                        .should()
+                                .beAnnotatedWith(MessageMapping.class);
+
+
+        rule.check(importedClasses);
+
     }
 }
