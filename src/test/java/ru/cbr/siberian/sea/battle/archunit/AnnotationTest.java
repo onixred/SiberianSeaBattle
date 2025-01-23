@@ -24,6 +24,7 @@ import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import ru.cbr.siberian.sea.battle.model.message.BaseRequestMessage;
 
 import static com.tngtech.archunit.core.domain.properties.CanBeAnnotated.Predicates.annotatedWith;
@@ -55,7 +56,7 @@ public class AnnotationTest {
 
     @Test
     @DisplayName("Проверка во всех классах в пакете controller на методах должна стоять аннотация MessageMapping")
-    void annotationMessageTest() {
+    void annotationMessageMappingTest() {
         String importPackages = "ru.cbr.siberian.sea.battle";
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -68,6 +69,23 @@ public class AnnotationTest {
 
 
         rule.check(importedClasses);
-
     }
+
+    @Test
+    @DisplayName("Проверка во всех классах в пакете controller на методах должна стоять аннотация PreAuthorize")
+    void annotationPreAuthorizeTest() {
+        String importPackages = "ru.cbr.siberian.sea.battle";
+        JavaClasses importedClasses = new ClassFileImporter()
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                .importPackages(importPackages);
+
+        ArchRule rule = methods().that().arePublic()
+                .and().areDeclaredInClassesThat().resideInAPackage("..controller..")
+                .should()
+                .beAnnotatedWith(PreAuthorize.class);
+
+        rule.check(importedClasses);
+    }
+
+
 }
