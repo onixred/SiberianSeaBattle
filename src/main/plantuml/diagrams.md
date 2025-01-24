@@ -533,6 +533,31 @@ player --> notification
 ```
 
 ```
+@startuml annotationPreAuthorizeTest
+hide empty members
+skinparam componentStyle uml2
+
+skinparam component {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+skinparam class {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+class GameController <<concrete>> {
+void : createUser() 
+}
+note right of GameController::createUser()
+  метод помечен аннотацией PreAuthorize
+end note
+
+@enduml
+```
+
+```
 @startuml uml
 
 interface ru.cbr.siberian.sea.battle.repository.MatchRepository {
@@ -879,6 +904,30 @@ double instability = metrics.getInstability(Feature.Game.getComponentIdentifier(
 assertTrue(instability <= 0, "I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям (нестабильность)" + instability);
 ```
 
+
+
+###  Проверка во всех классах в пакете controller на методах должна стоять аннотация PreAuthorize
+![asd](../../../target/generated-diagrams/annotationPreAuthorizeTest.svg)
+
+В структуре компонентов нестабильные компоненты должны располагаться сверху, а более стабильные — снизу,
+Чем больше I тем не стабильнее компонент.
+```java
+@Test
+@DisplayName("Проверка во всех классах в пакете controller на методах должна стоять аннотация PreAuthorize")
+void annotationPreAuthorizeTest() {
+    String importPackages = "ru.cbr.siberian.sea.battle";
+    JavaClasses importedClasses = new ClassFileImporter()
+            .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+            .importPackages(importPackages);
+
+    ArchRule rule = methods().that().arePublic()
+            .and().areDeclaredInClassesThat().resideInAPackage("..controller..")
+            .should()
+            .beAnnotatedWith(PreAuthorize.class);
+
+    rule.check(importedClasses);
+}
+```
 
 ![asd](../../../target/generated-diagrams/uml.svg)
 реальные
