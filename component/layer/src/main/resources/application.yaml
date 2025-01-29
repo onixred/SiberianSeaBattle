@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: SiberianSeaBattle
+  datasource:
+    url: jdbc:h2:mem:siberian_sea_battle
+    driver-class-name: org.h2.Driver
+    username: username
+    password: password
+  jpa:
+    generate-ddl: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+  sql:
+    init:
+      mode: always

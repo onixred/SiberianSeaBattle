@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello WebSocket</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="/main.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script src="/app.js"></script>
+    <meta charset="UTF-8">
+</head>
+<body>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+
+<div id="main-content" class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="connect">одключение к WebSocket:</label>
+                    <div class="form-group">
+                        <button id="connect" class="btn btn-default" type="submit">Connect</button>
+                        <label for="connect_name">Какой host для ws?</label>
+                        <input type="text" id="connect_name" class="form-control" value="ws://localhost:8080/ws">
+                    </div>
+                    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <select  name="topic" id="combobox_topic">
+                        <option value="/see-battle/chat/request">Чат</option>
+                        <option value="/see-battle/create-user/request">Регистрация (Создать) игрока</option>
+                        <option value="/see-battle/get-user/request">Вход игрока</option>
+                        <option value="/see-battle/create-game/request">Создать игру</option>
+                        <option value="/see-battle/create-fleet/request">Создать флот</option>
+                        <option value="/see-battle/generate-fleet/request">Сгенерировать флот на бэке</option>
+                        <option value="/see-battle/join-game/request">Писоединиться к игре</option>
+                        <option value="/see-battle/shot-game/request">Сделать выстрел</option>
+                        <option value="/see-battle/matches/request">Получить список игр по статусу</option>
+                        <option value="/see-battle/match-history/request">Получить ход (историю) игры </option>
+                    </select>
+                    <label for="name">Сообщение</label>
+                    <input type="text" id="name" class="form-control" placeholder="Введите сообщение" size="120">
+
+                </div>
+                <button id="send" class="btn btn-default" type="submit">Отправить</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="conversation" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Сообщение:</th>
+                </tr>
+                </thead>
+                <tbody id="message">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    document.getElementById("connect_name").value = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws';
+</script>
+
+</body>
+</html>

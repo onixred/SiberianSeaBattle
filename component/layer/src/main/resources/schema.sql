@@ -1,0 +1,1 @@
+create schema siberian_sea_battle;

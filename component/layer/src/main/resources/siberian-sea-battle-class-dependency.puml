@@ -1,0 +1,33 @@
+
+
+
+@startuml
+skinparam componentStyle uml2
+skinparam component {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+[controller] <<..ru.cbr.siberian.sea.battle.controller..>>
+[dao] <<..ru.cbr.siberian.sea.battle.dao..>>
+[model] <<..ru.cbr.siberian.sea.battle.model..>>
+[service] <<..ru.cbr.siberian.sea.battle.service..>>
+[acl] <<..ru.cbr.siberian.sea.battle.acl..>>
+[repository] <<..cbr.siberian.sea.battle.repository..>>
+
+[controller] --> [model]
+[controller] --> [service]
+
+[service] --> [model]
+[service] --> [acl]
+[service] --> [repository]
+
+[dao] --> [model]
+
+[repository] --> [dao]
+[repository] --> [model]
+
+[acl] --> [model]
+[acl] --> [dao]
+
+@enduml
