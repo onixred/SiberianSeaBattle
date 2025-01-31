@@ -19,40 +19,41 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 
-import java.util.List;
-
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
+import java.lang.annotation.Annotation;
 
 /**
  * Description:
  *
  * @author <a href="mailto:onixbed@gmail.com">amaksimov</a>
- * crested on 31.01.2025
+ * crested on 29.10.2024
  */
+public class AnnotationsForAllPublicMethodsToClassRuleTest implements ArchUnitRuleTest {
 
-public class OnlyHaveNameNotMatchingRuleTest implements ArchUnitRuleTest {
 
+    //""
 
     /**
-     * Все классы подходящие под regex должны могут содержать список зависимостей resideInAnyPackages
+     * Все публичные методы классов из пакета resideInAPackage должны использовать аннотацию annotation
      *
-     * @param packagePath     путь базового пакета для анализа
-     * @param regex регулярное выражение
-     * @param resideInAnyPackages   список зависимостей
+     * @param packagePath      путь базового пакета для анализа
+     * @param resideInAPackage резиденты пакета
+     * @param annotation       аннотация которая должна быть на методах
      */
-    public void execute(String packagePath, String regex, List<String> resideInAnyPackages) {
+    public static void execute(String packagePath, String resideInAPackage, Class<? extends Annotation> annotation) {
 
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages(packagePath);
 
-        String[] packages = resideInAnyPackages.toArray(new String[0]);
-        ArchRule rule = noClasses()
-                .that()
-                .haveNameNotMatching(regex)
+
+        ArchRule rule = ArchRuleDefinition.methods().that().arePublic()
+                .and().areDeclaredInClassesThat().resideInAPackage(resideInAPackage)
                 .should()
-                .dependOnClassesThat().resideInAnyPackage(packages);
+                .beAnnotatedWith(annotation);
+
         rule.check(importedClasses);
     }
+
 }

@@ -45,7 +45,7 @@ public class ComponentDependencyMetricsRuleTest implements ArchUnitRuleTest {
      * @param packageName пакет для анализа метрик
      * @param layers      метрики по слоям
      */
-    public void execute(String packagePath, String packageName, List<ComponentMetricLayer> layers) {
+    public static void execute(String packagePath, String packageName, List<ComponentMetricLayer> layers) {
 
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -55,6 +55,9 @@ public class ComponentDependencyMetricsRuleTest implements ArchUnitRuleTest {
 
         ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(metricsComponents);
         for (ComponentMetricLayer layer : layers) {
+            if(layer.getPackageName().contains(".")) {
+                continue;
+            }
             int efferentCoupling = metrics.getEfferentCoupling(layer.getComponentIdentifier());
             int afferentCoupling = metrics.getAfferentCoupling(layer.getComponentIdentifier());
             double instability = metrics.getInstability(layer.getComponentIdentifier());

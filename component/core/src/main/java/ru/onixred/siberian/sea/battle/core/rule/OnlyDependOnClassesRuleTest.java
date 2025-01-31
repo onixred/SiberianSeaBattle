@@ -19,10 +19,9 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 
 import java.util.List;
-
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 
 /**
  * Description:
@@ -40,7 +39,7 @@ public class OnlyDependOnClassesRuleTest implements ArchUnitRuleTest {
      * @param resideInAPackage резиденты пакета
      * @param resideInAnyPackages   список зависимостей
      */
-    public void execute(String packagePath, String resideInAPackage, List<String> resideInAnyPackages) {
+    public static void execute(String packagePath, String resideInAPackage, List<String> resideInAnyPackages) {
 
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -48,7 +47,7 @@ public class OnlyDependOnClassesRuleTest implements ArchUnitRuleTest {
 
 
        String[] packages = resideInAnyPackages.toArray(new String[0]);
-        ArchRule rule = classes()
+        ArchRule rule = ArchRuleDefinition.classes()
                 .that()
                 .resideInAnyPackage(resideInAPackage)
                 .should()

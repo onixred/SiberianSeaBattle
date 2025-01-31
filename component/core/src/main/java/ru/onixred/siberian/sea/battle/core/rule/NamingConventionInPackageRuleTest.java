@@ -19,8 +19,7 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
-
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 
 /**
  * Description:
@@ -36,16 +35,16 @@ public class NamingConventionInPackageRuleTest implements ArchUnitRuleTest {
      * @param packagePath     путь базового пакета для анализа
      * @param layer слой
      */
-    public void execute(String packagePath, Layer layer) {
+    public static void execute(String packagePath, RuleParamLayer layer) {
 
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages(packagePath);
 
-        ArchRule rule = classes().that().areNotAnonymousClasses().and()
+        ArchRule rule = ArchRuleDefinition.classes().that().areNotAnonymousClasses().and()
                 .resideInAnyPackage(layer.getPackageName())
                 .should()
-                .haveSimpleNameEndingWith(layer.getRuleNameEnding());
+                .haveNameMatching(layer.getRuleNameEnding());
 
         rule.check(importedClasses);
     }

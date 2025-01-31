@@ -23,8 +23,6 @@ import com.tngtech.archunit.library.Architectures;
 import java.util.List;
 import java.util.Map;
 
-import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
-
 /**
  * Description:
  *
@@ -39,22 +37,22 @@ public class LayeredRuleTest implements ArchUnitRuleTest {
      * @param packagePath     путь базового пакета для анализа
      * @param layerBeAccessedByLayers какра где ключ это слой а значение список слоев которые зависят от этого слоя
      */
-    public void execute(String packagePath, Map<Layer, List<Layer>> layerBeAccessedByLayers) {
+    public static void execute(String packagePath, Map<ParamLayer, List<ParamLayer>> layerBeAccessedByLayers) {
 
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages(packagePath);
-        Architectures.LayeredArchitecture layeredArchitecture = layeredArchitecture().consideringAllDependencies();
-        for(Layer layer: layerBeAccessedByLayers.keySet()) {
+        Architectures.LayeredArchitecture layeredArchitecture = Architectures.layeredArchitecture().consideringAllDependencies();
+        for(ParamLayer layer: layerBeAccessedByLayers.keySet()) {
             layeredArchitecture = layeredArchitecture.layer(layer.getName()).definedBy(layer.getPackageName());
         }
 
-        for(Map.Entry<Layer, List<Layer>> entry: layerBeAccessedByLayers.entrySet()) {
-            List<Layer> layers =  entry.getValue();
+        for(Map.Entry<ParamLayer, List<ParamLayer>> entry: layerBeAccessedByLayers.entrySet()) {
+            List<ParamLayer> layers =  entry.getValue();
             if(layers == null || layers.isEmpty()) {
                 layeredArchitecture = layeredArchitecture.whereLayer(entry.getKey().getName()).mayNotBeAccessedByAnyLayer();
             } else {
-                String[] names = layers.stream().map(Layer::getName).toList().toArray(new String[0]);
+                String[] names = layers.stream().map(ParamLayer::getName).toList().toArray(new String[0]);
                 layeredArchitecture = layeredArchitecture.whereLayer(entry.getKey().getName()).mayOnlyBeAccessedByLayers(names);
             }
 

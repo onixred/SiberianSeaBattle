@@ -19,42 +19,35 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
-
-import java.lang.annotation.Annotation;
-
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 
 /**
  * Description:
  *
  * @author <a href="mailto:onixbed@gmail.com">amaksimov</a>
- * crested on 29.10.2024
+ * crested on 31.01.2025
  */
-public class AnnotationsForAllPublicMthodsToClassRuleTest implements ArchUnitRuleTest {
-
-
-    //""
+public class PackageContainmentRuleTest implements ArchUnitRuleTest {
 
     /**
-     * Все публичные методы классов из пакета resideInAPackage должны использовать аннотацию annotation
+     * Все классы которые именованы согласно правилу RuleNameEnding должны находится в пакете PackageName
      *
-     * @param packagePath      путь базового пакета для анализа
-     * @param resideInAPackage резиденты пакета
-     * @param annotation       аннотация которая должна быть на методах
+     * @param packagePath     путь базового пакета для анализа
+     * @param layer слой
      */
-    public void execute(String packagePath, String resideInAPackage, Class<? extends Annotation> annotation) {
+    public static void execute(String packagePath, RuleParamLayer layer) {
 
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages(packagePath);
 
-
-        ArchRule rule = methods().that().arePublic()
-                .and().areDeclaredInClassesThat().resideInAPackage(resideInAPackage)
+        ArchRule rule = ArchRuleDefinition.classes().that().haveNameMatching(layer.getRuleNameEnding())
                 .should()
-                .beAnnotatedWith(annotation);
+                .resideInAPackage(layer.getPackageName());
 
         rule.check(importedClasses);
-    }
 
+
+
+    }
 }

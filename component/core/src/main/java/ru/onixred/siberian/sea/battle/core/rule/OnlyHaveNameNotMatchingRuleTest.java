@@ -19,8 +19,9 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import java.util.List;
 
 /**
  * Description:
@@ -28,25 +29,29 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
  * @author <a href="mailto:onixbed@gmail.com">amaksimov</a>
  * crested on 31.01.2025
  */
-public class PackageContainmentRuleTest implements ArchUnitRuleTest {
+
+public class OnlyHaveNameNotMatchingRuleTest implements ArchUnitRuleTest {
+
 
     /**
-     * Все классы которые заканчиваются согласно правилу RuleNameEnding должны находится в пакете PackageName
+     * Все классы подходящие под regex должны могут содержать список зависимостей resideInAnyPackages
      *
      * @param packagePath     путь базового пакета для анализа
-     * @param layer слой
+     * @param regex регулярное выражение
+     * @param resideInAnyPackages   список зависимостей
      */
-    public void execute(String packagePath, Layer layer) {
+    public static void execute(String packagePath, String regex, List<String> resideInAnyPackages) {
 
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages(packagePath);
 
-        ArchRule rule = classes().that().haveSimpleNameEndingWith(layer.getRuleNameEnding())
+        String[] packages = resideInAnyPackages.toArray(new String[0]);
+        ArchRule rule = ArchRuleDefinition.noClasses()
+                .that()
+                .haveNameNotMatching(regex)
                 .should()
-                .resideInAPackage(layer.getPackageName());
-
+                .dependOnClassesThat().resideInAnyPackage(packages);
         rule.check(importedClasses);
-
     }
 }

@@ -21,9 +21,10 @@ package ru.onixred.siberian.sea.battle.core.rule;
  * @author <a href="mailto:onixbed@gmail.com">amaksimov</a>
  * crested on 31.01.2025
  */
-public interface Layer {
+public interface ParamLayer {
     String getName();
 
-    String getRuleNameEnding();
+
     String getPackageName();
+
 }

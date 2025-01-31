@@ -44,7 +44,7 @@ public class LakosMetricsRuleTest implements ArchUnitRuleTest {
      * @param packageName     пакет для анализа метрик
      * @param metric метрики John Lakos
      */
-    public void execute(String packagePath, String packageName, LakosMetric metric) {
+    public static void execute(String packagePath, String packageName, LakosMetric metric) {
 
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)

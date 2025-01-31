@@ -21,13 +21,11 @@ import com.tngtech.archunit.core.domain.properties.CanBeAnnotated;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
+import com.tngtech.archunit.lang.conditions.ArchPredicates;
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
-
-import static com.tngtech.archunit.core.domain.properties.CanBeAnnotated.Predicates.annotatedWith;
-import static com.tngtech.archunit.lang.conditions.ArchPredicates.are;
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 
 /**
  * Description:
@@ -45,7 +43,7 @@ public class AnnotationsForAllClassesAssignableToClassRuleTest implements ArchUn
      * @param assignableClass базовый класс
      * @param annotations     список аннотаций которые должны быть на полях
      */
-    public void execute(String packagePath, Class<?> assignableClass, List<Class<? extends Annotation>> annotations) {
+    public static void execute(String packagePath, Class<?> assignableClass, List<Class<? extends Annotation>> annotations) {
 
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -55,13 +53,13 @@ public class AnnotationsForAllClassesAssignableToClassRuleTest implements ArchUn
         DescribedPredicate<CanBeAnnotated> predicate = null;
         for (Class<? extends Annotation> annotation : annotations) {
             if (predicate == null) {
-                predicate = are(annotatedWith(annotation));
+                predicate = ArchPredicates.are(CanBeAnnotated.Predicates.annotatedWith(annotation));
             } else {
-                predicate.or(annotatedWith(annotation));
+                predicate = predicate.or(CanBeAnnotated.Predicates.annotatedWith(annotation));
             }
 
         }
-        ArchRule rule = classes().that().areAssignableTo(assignableClass)
+        ArchRule rule = ArchRuleDefinition.classes().that().areAssignableTo(assignableClass)
                 .should().onlyAccessFieldsThat(predicate);
         rule.check(importedClasses);
     }

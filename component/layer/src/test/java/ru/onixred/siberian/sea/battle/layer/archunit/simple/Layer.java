@@ -17,6 +17,8 @@ package ru.onixred.siberian.sea.battle.layer.archunit.simple;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import ru.onixred.siberian.sea.battle.core.rule.ParamLayer;
+import ru.onixred.siberian.sea.battle.core.rule.RuleParamLayer;
 
 /**
  * Description:
@@ -25,22 +27,23 @@ import lombok.RequiredArgsConstructor;
  * crested on 23.10.2024
  */
 
+@Getter
 @RequiredArgsConstructor
-public enum Layer {
+public enum Layer implements ParamLayer, RuleParamLayer {
 
-    ACL("acl"),
-    CONFIGURATION("configuration"),
-    CONTROLLER("controller"),
-    DAO("dao"),
-    MODEL("model"),
-    MODEL_ENUMERATION("model.enumeration"),
-    MODEL_GAME("model.game"),
-    MODEL_MESSAGE("model.message"),
-    REPOSITORY("repository"),
-    SERVICE("service");
+    ACL("acl",".*Mapper"),
+    CONFIGURATION("configuration",".*Configuration"),
+    CONTROLLER("controller",".*Controller"),
+    DAO("dao",".*Dao"),
+    MODEL("model",".*"),
+    MODEL_ENUMERATION("model.enumeration",".*Status|.*Type.*"),
+    MODEL_GAME("model.game",".*"),
+    MODEL_MESSAGE("model.message",".*Message.*|.*MatchUI"),
+    REPOSITORY("repository",".*Repository"),
+    SERVICE("service",".*Service");
 
-    @Getter
     private final String name;
+    private final String ruleNameEnding;
 
     public static final String BASE_PACKAGE = "ru.onixred.siberian.sea.battle.layer.";
 
