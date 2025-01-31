@@ -15,7 +15,7 @@
  */
 package ru.onixred.siberian.sea.battle.layer.acl;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.onixred.siberian.sea.battle.layer.model.game.GridPoint;
 import ru.onixred.siberian.sea.battle.layer.model.game.Point;
 import ru.onixred.siberian.sea.battle.layer.model.game.Warship;
@@ -28,14 +28,14 @@ import java.util.Optional;
  * @author <a href="mailto:onixbed@gmail.com">amaksimov</a>
  * crested on 15.09.2024
  */
-@Component
+@UtilityClass
 public class GameMapper {
 
     /**
      * Возвращает карту для владелца поля
      *
      * @param grids карта
-     * @return карта боя
+     * @return карта бояØ
      */
     public int[][] toGridsForOwner(GridPoint[][] grids) {
         return toGrids(grids, true);

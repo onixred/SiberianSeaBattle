@@ -54,7 +54,7 @@ public class SeaBattleService {
     private final GameService gameService;
     private final NotificationService notificationService;
     private final ValidatorService validatorService;
-    private final GameMapper gameMapper;
+
 
     private final Map<UUID, MatchFleet> matchIdToMatchFleet = new ConcurrentHashMap<>();
 
@@ -259,7 +259,7 @@ public class SeaBattleService {
             matchFleet.userIdToFleet().put(userId, fleet);
             updateMatchStatus(matchFleet, match, userId);
             response.setStatus(Status.OK);
-            int[][] grids = gameMapper.toGridsForOwner(fleet.getGrids());
+            int[][] grids = GameMapper.toGridsForOwner(fleet.getGrids());
             response.setGrids(grids);
             Optional<UUID> opponentUserId = matchFleet.findOpponentUserId(userId);
             response.setStartGame(opponentUserId.isPresent());
@@ -355,7 +355,7 @@ public class SeaBattleService {
             boolean isHit = gameService.checkShot(opponentFleet, request.getX(), request.getY());
 
             response.setHit(isHit);
-            int[][] opponentGrids  = gameMapper.toGridsForOpponent(opponentFleet.getGrids());
+            int[][] opponentGrids  = GameMapper.toGridsForOpponent(opponentFleet.getGrids());
             response.setOpponentGrids(opponentGrids);
             response.setStatus(Status.OK);
             actionHistoryService.createActionHistory(match, player, request.getX(), request.getY());
@@ -382,7 +382,7 @@ public class SeaBattleService {
 
             //нотификация сопернику
             var opponent = getPlayer(opponentUserId);
-            int[][] ownerGrids  = gameMapper.toGridsForOwner(opponentFleet.getGrids());
+            int[][] ownerGrids  = GameMapper.toGridsForOwner(opponentFleet.getGrids());
             ShotGameOwnerResponseMessage opponentResponse = new ShotGameOwnerResponseMessage();
             opponentResponse.setStatus(Status.OK);
             opponentResponse.setHit(isHit);
@@ -512,7 +512,7 @@ public class SeaBattleService {
             List<Map.Entry<UUID, Fleet>> entries = matchFleet.userIdToFleet().entrySet().stream().sorted(Map.Entry.comparingByKey()).toList();
             for (int number = 0; number < entries.size(); number++) {
                 var entry = entries.get(number);
-                int[][] grids = gameMapper.toGridsForOpponent(entry.getValue().getGrids());
+                int[][] grids = GameMapper.toGridsForOpponent(entry.getValue().getGrids());
                 Optional<Player> player = playerService.getPlayer(entry.getKey());
                 if (number == 0) {
                     response.setPlayerOneGrids(grids);
@@ -614,9 +614,9 @@ public class SeaBattleService {
             return grid;
         }
         if (isOwner) {
-            return gameMapper.toGridsForOwner(fleet.getGrids());
+            return GameMapper.toGridsForOwner(fleet.getGrids());
         } else {
-            return gameMapper.toGridsForOpponent(fleet.getGrids());
+            return GameMapper.toGridsForOpponent(fleet.getGrids());
         }
     }
 

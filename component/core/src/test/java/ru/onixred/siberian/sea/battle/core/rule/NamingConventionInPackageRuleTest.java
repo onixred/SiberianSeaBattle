@@ -13,16 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ru.onixred.siberian.sea.battle.layer.archunit;
+package ru.onixred.siberian.sea.battle.core.rule;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import ru.onixred.siberian.sea.battle.layer.acl.MatchMapper;
-import ru.onixred.siberian.sea.battle.layer.service.MatchService;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 
@@ -30,21 +26,27 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
  * Description:
  *
  * @author <a href="mailto:onixbed@gmail.com">amaksimov</a>
- * crested on 23.10.2024
+ * crested on 31.01.2025
  */
-public class ClassDependencyTest {
+public class NamingConventionInPackageRuleTest implements ArchUnitRuleTest {
 
-    @Test
-    @DisplayName("Проверка кто зависит от класса GameMapper")
-    void matchMapperClassDependencyTest() {
-        String importPackages = "ru.onixred.siberian.sea.battle.layer";
-        JavaClasses javaClasses = new ClassFileImporter()
+    /**
+     * Все классы которые в пакете PackageName должны заканчиваются согласно правилу RuleNameEnding
+     *
+     * @param packagePath     путь базового пакета для анализа
+     * @param layer слой
+     */
+    public void execute(String packagePath, Layer layer) {
+
+        JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(importPackages);
-        ArchRule rule = classes().that().haveNameMatching(MatchMapper.class.getName())
-                .should()
-                .onlyHaveDependentClassesThat().haveNameMatching(MatchService.class.getName());
+                .importPackages(packagePath);
 
-        rule.check(javaClasses);
+        ArchRule rule = classes().that().areNotAnonymousClasses().and()
+                .resideInAnyPackage(layer.getPackageName())
+                .should()
+                .haveSimpleNameEndingWith(layer.getRuleNameEnding());
+
+        rule.check(importedClasses);
     }
 }

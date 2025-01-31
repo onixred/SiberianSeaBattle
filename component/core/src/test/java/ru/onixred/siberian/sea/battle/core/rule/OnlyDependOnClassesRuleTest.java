@@ -15,56 +15,46 @@
  */
 package ru.onixred.siberian.sea.battle.core.rule;
 
-import com.tngtech.archunit.base.DescribedPredicate;
 import com.tngtech.archunit.core.domain.JavaClasses;
-import com.tngtech.archunit.core.domain.properties.CanBeAnnotated;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 
-import static com.tngtech.archunit.core.domain.properties.CanBeAnnotated.Predicates.annotatedWith;
-import static com.tngtech.archunit.lang.conditions.ArchPredicates.are;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 
 /**
  * Description:
  *
  * @author <a href="mailto:onixbed@gmail.com">amaksimov</a>
- * crested on 29.10.2024
+ * crested on 31.01.2025
  */
-public class AnnotationsRuleTest implements ArchUnitRuleTest {
+public class OnlyDependOnClassesRuleTest implements ArchUnitRuleTest {
 
-
-    //""
 
     /**
-     * Все поля классов реализующие интерфейс assignableClass используют аннотации из списка annotations
+     * Все классы из пакета resideInAPackage должны содержать заданный список зависимостей resideInAnyPackages
      *
      * @param packagePath     путь базового пакета для анализа
-     * @param assignableClass базовый класс
-     * @param annotations     список аннотаций которые должны быть на полях
+     * @param resideInAPackage резиденты пакета
+     * @param resideInAnyPackages   список зависимостей
      */
-    public void execute(String packagePath, Class<?> assignableClass, List<Class<? extends Annotation>> annotations) {
+    public void execute(String packagePath, String resideInAPackage, List<String> resideInAnyPackages) {
 
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages(packagePath);
 
 
-        DescribedPredicate<CanBeAnnotated> predicate = null;
-        for (Class<? extends Annotation> annotation : annotations) {
-            if (predicate == null) {
-                predicate = are(annotatedWith(annotation));
-            } else {
-                predicate.or(annotatedWith(annotation));
-            }
+       String[] packages = resideInAnyPackages.toArray(new String[0]);
+        ArchRule rule = classes()
+                .that()
+                .resideInAnyPackage(resideInAPackage)
+                .should()
+                .onlyDependOnClassesThat()
+                .resideInAnyPackage(packages);
 
-        }
-        ArchRule rule = classes().that().areAssignableTo(assignableClass)
-                .should().onlyAccessFieldsThat(predicate);
         rule.check(importedClasses);
     }
 }

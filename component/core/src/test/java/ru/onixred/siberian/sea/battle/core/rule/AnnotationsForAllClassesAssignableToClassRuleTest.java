@@ -21,7 +21,6 @@ import com.tngtech.archunit.core.domain.properties.CanBeAnnotated;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
-import org.junit.jupiter.api.DisplayName;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -38,8 +37,6 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
  */
 public class AnnotationsForAllClassesAssignableToClassRuleTest implements ArchUnitRuleTest {
 
-
-    //""
 
     /**
      * Все поля классов реализующие интерфейс assignableClass используют аннотации из списка annotations

@@ -13,14 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ru.onixred.siberian.sea.battle.layer.archunit;
+package ru.onixred.siberian.sea.battle.core.rule;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchRule;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 
@@ -28,21 +26,27 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
  * Description:
  *
  * @author <a href="mailto:onixbed@gmail.com">amaksimov</a>
- * crested on 23.10.2024
+ * crested on 31.01.2025
  */
-public class PackageContainmentTest {
+public class PackageContainmentRuleTest implements ArchUnitRuleTest {
 
-    @Test
-    @DisplayName("Проверка в пакете ACL все классы с постфиксом Mapper")
-    void gameMapperClassDependencyTest() {
-        String importPackages = "ru.onixred.siberian.sea.battle.layer";
-        JavaClasses javaClasses = new ClassFileImporter()
+    /**
+     * Все классы которые заканчиваются согласно правилу RuleNameEnding должны находится в пакете PackageName
+     *
+     * @param packagePath     путь базового пакета для анализа
+     * @param layer слой
+     */
+    public void execute(String packagePath, Layer layer) {
+
+        JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(importPackages);
+                .importPackages(packagePath);
 
-        ArchRule rule = classes().that().haveSimpleNameEndingWith("Mapper")
+        ArchRule rule = classes().that().haveSimpleNameEndingWith(layer.getRuleNameEnding())
                 .should()
-                .resideInAPackage(Layer.ACL.getPackageName());
+                .resideInAPackage(layer.getPackageName());
 
-        rule.check(javaClasses);
-    }}
+        rule.check(importedClasses);
+
+    }
+}

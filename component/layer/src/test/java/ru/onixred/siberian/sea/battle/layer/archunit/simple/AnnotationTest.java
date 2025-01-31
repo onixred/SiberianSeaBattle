@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ru.onixred.siberian.sea.battle.layer.archunit;
+package ru.onixred.siberian.sea.battle.layer.archunit.simple;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
@@ -40,14 +40,15 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
  */
 public class AnnotationTest {
 
+    public static final String IMPORT_PACKAGES = "ru.onixred.siberian.sea.battle.layer";
 
     @Test
     @DisplayName("Проверка все поля классов реализующие интерфейс BaseRequestMessage используют аннотации проверки NotBlank или NotNull")
     void annotationBaseRequestMessageTest() {
-        String importPackages = "ru.onixred.siberian.sea.battle.layer";
+
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(importPackages);
+                .importPackages(IMPORT_PACKAGES);
         ArchRule rule = classes().that().areAssignableTo(BaseRequestMessage.class)
                 .should().onlyAccessFieldsThat(are(annotatedWith(NotBlank.class)).or(annotatedWith(NotNull.class)));
 
@@ -57,10 +58,10 @@ public class AnnotationTest {
     @Test
     @DisplayName("Проверка во всех классах в пакете controller на методах должна стоять аннотация MessageMapping")
     void annotationMessageMappingTest() {
-        String importPackages = "ru.onixred.siberian.sea.battle.layer";
+
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(importPackages);
+                .importPackages(IMPORT_PACKAGES);
 
         ArchRule rule = methods().that().arePublic()
                         .and().areDeclaredInClassesThat().resideInAPackage("..controller..")
@@ -74,13 +75,13 @@ public class AnnotationTest {
     @Test
     @DisplayName("Проверка во всех классах в пакете controller на методах должна стоять аннотация PreAuthorize")
     void annotationPreAuthorizeTest() {
-        String importPackages = "ru.onixred.siberian.sea.battle.layer";
+
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(importPackages);
+                .importPackages(IMPORT_PACKAGES);
 
         ArchRule rule = methods().that().arePublic()
-                .and().areDeclaredInClassesThat().resideInAPackage("..controller..")
+                .and().areDeclaredInClassesThat().resideInAPackage(Layer.CONTROLLER.getPackageName())
                 .should()
                 .beAnnotatedWith(PreAuthorize.class);
 

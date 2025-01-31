@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ru.onixred.siberian.sea.battle.layer.archunit;
+package ru.onixred.siberian.sea.battle.layer.archunit.simple;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
@@ -32,13 +32,14 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
  * crested on 23.10.2024
  */
 public class PackageDependencyTest {
+    public static final String IMPORT_PACKAGES = "ru.onixred.siberian.sea.battle.layer";
     @Test
     @DisplayName("Проверка от каких пакетов не зависит ACL")
     void aclPackageNoDependencyTest() {
-        String importPackages = "ru.onixred.siberian.sea.battle.layer";
+
         JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(importPackages);
+                .importPackages(IMPORT_PACKAGES);
         ArchRule rule = noClasses().that().resideInAPackage(Layer.ACL.getPackageName())
                 .should()
                 .dependOnClassesThat()
@@ -55,10 +56,10 @@ public class PackageDependencyTest {
     @Test
     @DisplayName("Проверка от каких пакетов зависит ACL")
     void aclPackageDependencyTest() {
-        String importPackages = "ru.onixred.siberian.sea.battle.layer";
+
         JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(importPackages);
+                .importPackages(IMPORT_PACKAGES);
         ArchRule rule = classes().that().resideInAPackage(Layer.ACL.getPackageName())
                 .should()
                 .dependOnClassesThat()
@@ -68,12 +69,12 @@ public class PackageDependencyTest {
     }
 
     @Test
-    @DisplayName("Проверка кто зависит от пакета ACL")
+    @DisplayName("Проверка какие пакеты зависят от пакета ACL")
     void aclPackageHaveDependencyTest() {
-        String importPackages = "ru.onixred.siberian.sea.battle.layer";
+
         JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(importPackages);
+                .importPackages(IMPORT_PACKAGES);
         ArchRule rule = classes().that().resideInAPackage(Layer.ACL.getPackageName())
                 .should()
                 .onlyHaveDependentClassesThat()
@@ -84,12 +85,12 @@ public class PackageDependencyTest {
     }
 
     @Test
-    @DisplayName("Проверка кто не зависит от пакета ACL")
+    @DisplayName("Проверка какие пакеты не зависят от пакета ACL")
     void aclPackageHaveNoDependencyTest() {
-        String importPackages = "ru.onixred.siberian.sea.battle.layer";
+
         JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(importPackages);
+                .importPackages(IMPORT_PACKAGES);
         ArchRule rule = noClasses().that().resideInAPackage(Layer.ACL.getPackageName())
                 .should()
                 .onlyHaveDependentClassesThat()

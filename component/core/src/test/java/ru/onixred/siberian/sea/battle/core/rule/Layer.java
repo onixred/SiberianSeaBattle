@@ -13,34 +13,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package ru.onixred.siberian.sea.battle.layer.archunit;
-
-import lombok.RequiredArgsConstructor;
+package ru.onixred.siberian.sea.battle.core.rule;
 
 /**
  * Description:
  *
  * @author <a href="mailto:onixbed@gmail.com">amaksimov</a>
- * crested on 23.10.2024
+ * crested on 31.01.2025
  */
+public interface Layer {
+    String getName();
 
-@RequiredArgsConstructor
-public enum Layer {
-
-    ACL,
-    CONFIGURATION,
-    CONTROLLER,
-    DAO,
-    MODEL,
-    REPOSITORY,
-    SERVICE;
-
-   public String getPackageName() {
-       return ".." + name().toLowerCase() + "..";
-   }
-
-    public String getComponentIdentifier(String packages) {
-        return packages + "." + name().toLowerCase();
-    }
-
+    String getRuleNameEnding();
+    String getPackageName();
 }

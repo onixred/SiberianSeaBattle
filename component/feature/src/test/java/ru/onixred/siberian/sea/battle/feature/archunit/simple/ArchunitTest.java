@@ -1,4 +1,4 @@
-package ru.onixred.siberian.sea.battle.layer.archunit;
+package ru.onixred.siberian.sea.battle.feature.archunit.simple;
 
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
@@ -15,14 +15,16 @@ import com.tngtech.archunit.library.metrics.LakosMetrics;
 import com.tngtech.archunit.library.metrics.MetricsComponents;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.onixred.siberian.sea.battle.layer.acl.GameMapper;
-import ru.onixred.siberian.sea.battle.layer.acl.MatchMapper;
-import ru.onixred.siberian.sea.battle.layer.model.Match;
+import ru.onixred.siberian.sea.battle.feature.game.GameMapper;
+import ru.onixred.siberian.sea.battle.feature.match.Match;
+import ru.onixred.siberian.sea.battle.feature.match.MatchMapper;
 
-import java.util.List;
 import java.util.Set;
 
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noConstructors;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noFields;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
 import static com.tngtech.archunit.library.plantuml.rules.PlantUmlArchCondition.Configuration.consideringOnlyDependenciesInDiagram;
@@ -31,22 +33,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ArchunitTest {
 
-    public static final String IMPORT_PACKAGES = "ru.onixred.siberian.sea.battle.layer";
-    public static final String IMPORT_PACKAGES_FEATURE = "ru.cbr.siberian.feature.first.sea.battle";
+
+    public static final String IMPORT_PACKAGES_FEATURE = "ru.onixred.siberian.sea.battle.feature";
 
     @Test
     void archunitRuleTest() {
         JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(IMPORT_PACKAGES);
+                .importPackages(IMPORT_PACKAGES_FEATURE);
 
         ArchRule rule = classes()
                 .that()
-                .resideInAnyPackage("ru.onixred.siberian.sea.battle.layer..")
+                .resideInAnyPackage(IMPORT_PACKAGES_FEATURE + "..")
                 .should()
                 .onlyDependOnClassesThat()
                 .resideInAnyPackage(
-                        "ru.onixred.siberian.sea.battle.layer..",
+                        IMPORT_PACKAGES_FEATURE + "..",
                         "org.springframework..",
                         "jakarta.persistence..",
                         "org.modelmapper..",
@@ -64,7 +66,7 @@ public class ArchunitTest {
 
         JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(IMPORT_PACKAGES);
+                .importPackages(IMPORT_PACKAGES_FEATURE);
         ArchRule rule = noClasses()
                 .that()
                 .haveNameNotMatching(GameMapper.class.getName())
@@ -78,30 +80,23 @@ public class ArchunitTest {
 
         JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(IMPORT_PACKAGES);
+                .importPackages(IMPORT_PACKAGES_FEATURE);
 
         Architectures.LayeredArchitecture layeredArchitecture = layeredArchitecture().consideringAllDependencies()
-                .layer(Layer.ACL.name()).definedBy("ru.onixred.siberian.sea.battle.layer.acl..")
-                .layer(Layer.CONFIGURATION.name()).definedBy("ru.onixred.siberian.sea.battle.layer.configuration..")
-                .layer(Layer.CONTROLLER.name()).definedBy("ru.onixred.siberian.sea.battle.layer.controller..")
-                .layer(Layer.DAO.name()).definedBy("ru.onixred.siberian.sea.battle.layer.dao..")
-                .layer(Layer.MODEL.name()).definedBy("ru.onixred.siberian.sea.battle.layer.model")
-                .layer("model.enumeration").definedBy("ru.onixred.siberian.sea.battle.layer.model.enumeration..")
-                .layer("model.game").definedBy("ru.onixred.siberian.sea.battle.layer.model.game..")
-                .layer("model.message").definedBy("ru.onixred.siberian.sea.battle.layer.model.message..")
-                .layer(Layer.REPOSITORY.name()).definedBy("ru.onixred.siberian.sea.battle.layer.repository..")
-                .layer(Layer.SERVICE.name()).definedBy("ru.onixred.siberian.sea.battle.layer.service..")
+                .layer(Layer.COMMON.name()).definedBy(Layer.COMMON.getPackageName())
+                .layer(Layer.CONFIGURATION.name()).definedBy(Layer.CONFIGURATION.getPackageName())
+                .layer(Layer.GAME.name()).definedBy(Layer.GAME.getPackageName())
+                .layer(Layer.MATCH.name()).definedBy(Layer.MATCH.getPackageName())
+                .layer(Layer.NOTIFICATION.name()).definedBy(Layer.NOTIFICATION.getPackageName())
+                .layer(Layer.PLAYER.name()).definedBy(Layer.PLAYER.getPackageName())
 
-                .whereLayer(Layer.ACL.name()).mayOnlyBeAccessedByLayers(Layer.SERVICE.name(), "model.enumeration")
+                .whereLayer(Layer.COMMON.name()).mayOnlyBeAccessedByLayers(Layer.MATCH.name(), Layer.PLAYER.name(), Layer.NOTIFICATION.name())
                 .whereLayer(Layer.CONFIGURATION.name()).mayNotBeAccessedByAnyLayer()
-                .whereLayer(Layer.CONTROLLER.name()).mayNotBeAccessedByAnyLayer()
-                .whereLayer(Layer.DAO.name()).mayOnlyBeAccessedByLayers(Layer.REPOSITORY.name(), Layer.ACL.name())
-                .whereLayer(Layer.MODEL.name()).mayOnlyBeAccessedByLayers(Layer.SERVICE.name(), "model.message", Layer.ACL.name())
-                .whereLayer("model.enumeration").mayOnlyBeAccessedByLayers(Layer.DAO.name(), Layer.MODEL.name(), "model.message", Layer.REPOSITORY.name(), Layer.SERVICE.name(), Layer.ACL.name())
-                .whereLayer("model.game").mayOnlyBeAccessedByLayers(Layer.SERVICE.name(), Layer.ACL.name())
-                .whereLayer("model.message").mayOnlyBeAccessedByLayers(Layer.CONTROLLER.name(), Layer.SERVICE.name())
-                .whereLayer(Layer.REPOSITORY.name()).mayOnlyBeAccessedByLayers(Layer.SERVICE.name())
-                .whereLayer(Layer.SERVICE.name()).mayOnlyBeAccessedByLayers(Layer.CONTROLLER.name());
+                .whereLayer(Layer.GAME.name()).mayOnlyBeAccessedByLayers(Layer.MATCH.name())
+                .whereLayer(Layer.MATCH.name()).mayNotBeAccessedByAnyLayer()
+                .whereLayer(Layer.NOTIFICATION.name()).mayOnlyBeAccessedByLayers(Layer.MATCH.name(), Layer.PLAYER.name())
+                .whereLayer(Layer.PLAYER.name()).mayOnlyBeAccessedByLayers(Layer.MATCH.name());
+
         layeredArchitecture.check(javaClasses);
     }
 
@@ -110,35 +105,15 @@ public class ArchunitTest {
 
         JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(IMPORT_PACKAGES);
+                .importPackages(IMPORT_PACKAGES_FEATURE);
         SliceRule sliceRule = slices()
-                .matching("ru.onixred.siberian.sea.battle.layer.(*)..")
+                .matching(IMPORT_PACKAGES_FEATURE + ".(*)..")
                 .should()
                 .beFreeOfCycles();
         sliceRule.check(javaClasses);
     }
 
-    @Test
-    void lakosMetricsTest() {
-        JavaClasses javaClasses = new ClassFileImporter()
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(IMPORT_PACKAGES);
 
-        Set<JavaPackage> subpackages = javaClasses.getPackage(IMPORT_PACKAGES).getSubpackages();
-        MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
-
-        LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(metricsComponents);
-        //https://www.archunit.org/userguide/html/000_Index.html
-        System.out.println("CCD - Сумма зависимостей всех компонентов " + metrics.getCumulativeComponentDependency());
-        System.out.println("ACD - CCD деленная на количество всех компонентов " + metrics.getAverageComponentDependency());
-        System.out.println("RACD - ACD деленное на количество всех компонентов " + metrics.getRelativeAverageComponentDependency());
-        System.out.println("CCD системы, деленная на CCD сбалансированного бинарного дерева с тем же количеством компонентов " + metrics.getNormalizedCumulativeComponentDependency());
-
-        assertTrue(metrics.getCumulativeComponentDependency() <= 21, "CCD - Сумма зависимостей всех компонентов " + metrics.getCumulativeComponentDependency());
-        assertTrue(metrics.getAverageComponentDependency() <= 3, "ACD - CCD деленная на количество всех компонентов " + metrics.getAverageComponentDependency());
-        assertTrue(metrics.getRelativeAverageComponentDependency() < 0.5, "RACD - ACD деленное на количество всех компонентов " + metrics.getRelativeAverageComponentDependency());
-        assertTrue(metrics.getNormalizedCumulativeComponentDependency() < 1.24, "CCD системы, деленная на CCD сбалансированного бинарного дерева с тем же количеством компонентов " + metrics.getNormalizedCumulativeComponentDependency());
-    }
 
     @Test
     void lakosMetricsFeatureFirstTest() {
@@ -164,38 +139,6 @@ public class ArchunitTest {
     }
 
     @Test
-    void componentDependencyMetricsTest() {
-        JavaClasses javaClasses = new ClassFileImporter()
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(IMPORT_PACKAGES);
-
-        Set<JavaPackage> subpackages = javaClasses.getPackage(IMPORT_PACKAGES).getSubpackages();
-        MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
-        ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(metricsComponents);
-        for (Layer layer : Layer.values()) {
-            int efferentCoupling = metrics.getEfferentCoupling(layer.getComponentIdentifier(IMPORT_PACKAGES));
-
-            System.out.println(layer + " Ce - показывает зависимости пакета от внешних пакетов (исходящие зависимости) " + efferentCoupling);
-            int afferentCoupling = metrics.getAfferentCoupling(layer.getComponentIdentifier(IMPORT_PACKAGES));
-            System.out.println(layer + " Ca - показывает зависимости внешних пакетов от указанного пакета (входящие зависимости) " + afferentCoupling);
-            double instability = metrics.getInstability(layer.getComponentIdentifier(IMPORT_PACKAGES));
-            System.out.println(layer + " I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям " + instability);
-            double abstractness = metrics.getAbstractness(layer.getComponentIdentifier(IMPORT_PACKAGES));
-            System.out.println(layer + " A - num(abstract_classes) / num(all_classes) в пакете " + abstractness);
-            double normalizedDistanceFromMainSequence = metrics.getNormalizedDistanceFromMainSequence(layer.getComponentIdentifier(IMPORT_PACKAGES));
-            System.out.println(layer + " D -  | A + I - 1 | нормализованное расстояние от идеальной линии между (A=1, I=0) и (A=0, I=1) " + normalizedDistanceFromMainSequence);
-
-            assertTrue(efferentCoupling <= 3, layer + " Ce - показывает зависимости пакета от внешних пакетов (исходящие зависимости) " + efferentCoupling);
-            assertTrue(afferentCoupling <= 5, layer + " Ca - показывает зависимости внешних пакетов от указанного пакета (входящие зависимости) " + afferentCoupling);
-            assertTrue(instability <= 1, layer + " I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям " + instability);
-            assertTrue(abstractness <= 1, layer + " A - num(abstract_classes) / num(all_classes) в пакете " + abstractness);
-            assertTrue(normalizedDistanceFromMainSequence <= 0.86, layer + " D -  | A + I - 1 | нормализованное расстояние от идеальной линии между (A=1, I=0) и (A=0, I=1) " + normalizedDistanceFromMainSequence);
-        }
-
-    }
-
-
-    @Test
     void componentDependencyMetricsFeatureFirstTest() {
         JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -204,17 +147,17 @@ public class ArchunitTest {
         Set<JavaPackage> subpackages = javaClasses.getPackage(IMPORT_PACKAGES_FEATURE).getSubpackages();
         MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
         ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(metricsComponents);
-        List<String> layers = List.of(".game", ".match", ".player", ".common", ".configuration", ".notification");
-        for (String layer : layers) {
-            int efferentCoupling = metrics.getEfferentCoupling(IMPORT_PACKAGES_FEATURE + layer);
+
+        for (Layer layer : Layer.values()) {
+            int efferentCoupling = metrics.getEfferentCoupling(layer.getComponentIdentifier());
             System.out.println(layer + " Ce - показывает зависимости пакета от внешних пакетов (исходящие зависимости) " + efferentCoupling);
-            int afferentCoupling = metrics.getAfferentCoupling(IMPORT_PACKAGES_FEATURE + layer);
+            int afferentCoupling = metrics.getAfferentCoupling(layer.getComponentIdentifier());
             System.out.println(layer + " Ca - показывает зависимости внешних пакетов от указанного пакета (входящие зависимости) " + afferentCoupling);
-            double instability = metrics.getInstability(IMPORT_PACKAGES_FEATURE + layer);
+            double instability = metrics.getInstability(layer.getComponentIdentifier());
             System.out.println(layer + " I - Ce / (Ca + Ce), т.е. отношение исходящих зависимостей ко всем зависимостям " + instability);
-            double abstractness = metrics.getAbstractness(IMPORT_PACKAGES_FEATURE + layer);
+            double abstractness = metrics.getAbstractness(layer.getComponentIdentifier());
             System.out.println(layer + " A - num(abstract_classes) / num(all_classes) в пакете " + abstractness);
-            double normalizedDistanceFromMainSequence = metrics.getNormalizedDistanceFromMainSequence(IMPORT_PACKAGES_FEATURE + layer);
+            double normalizedDistanceFromMainSequence = metrics.getNormalizedDistanceFromMainSequence(layer.getComponentIdentifier());
             System.out.println(layer + " D -  | A + I - 1 | нормализованное расстояние от идеальной линии между (A=1, I=0) и (A=0, I=1) " + normalizedDistanceFromMainSequence);
 
             assertTrue(efferentCoupling <= 4, layer + " Ce - показывает зависимости пакета от внешних пакетов (исходящие зависимости) " + efferentCoupling);
@@ -232,7 +175,7 @@ public class ArchunitTest {
     void shouldNotUseFieldInjectionTest() {
         JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(IMPORT_PACKAGES);
+                .importPackages(IMPORT_PACKAGES_FEATURE);
         ArchRule rule = noFields().should()
                 .beAnnotatedWith(Autowired.class);
 
@@ -244,11 +187,11 @@ public class ArchunitTest {
 
         JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(IMPORT_PACKAGES);
+                .importPackages(IMPORT_PACKAGES_FEATURE);
         ArchRule rule = classes().that().areNotAnonymousClasses().and()
-                .resideInAnyPackage(Layer.ACL.getComponentIdentifier(IMPORT_PACKAGES))
+                .resideInAnyPackage(Layer.NOTIFICATION.getComponentIdentifier())
                 .should()
-                .haveSimpleNameEndingWith("Mapper");
+                .haveNameMatching(".*notification.*");
 
         rule.check(javaClasses);
     }
@@ -257,7 +200,7 @@ public class ArchunitTest {
     void shouldNotCreateMatchInMatchMapperTest() {
         JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(IMPORT_PACKAGES);
+                .importPackages(IMPORT_PACKAGES_FEATURE);
         ArchRule rule = noConstructors().that().areDeclaredInClassesThat()
                 .areAssignableTo(Match.class).should().onlyBeCalled().byClassesThat().haveNameMatching(MatchMapper.class.getName());
 
@@ -268,7 +211,7 @@ public class ArchunitTest {
     void plantUmlTest() {
         JavaClasses javaClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages(IMPORT_PACKAGES);
+                .importPackages(IMPORT_PACKAGES_FEATURE);
         final var myDiagram = getClass().getClassLoader().getResource("siberian-sea-battle-class-dependency.puml");
         ClassesShouldConjunction conjunction = classes().should(adhereToPlantUmlDiagram(myDiagram, consideringOnlyDependenciesInDiagram()));
 
