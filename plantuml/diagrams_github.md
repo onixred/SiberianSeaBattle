@@ -1065,3 +1065,57 @@ public static void execute(String packagePath, Map<ParamLayer, List<ParamLayer>>
     }
 ```
 
+### Проверка метрик связности компонентов
+```java
+ public static void execute(String packagePath, String packageName, List<ComponentMetricLayer> layers) {
+      JavaClasses importedClasses = new ClassFileImporter()
+              .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+              .importPackages(packagePath);
+      Set<JavaPackage> subpackages = importedClasses.getPackage(packageName).getSubpackages();
+      MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
+
+      ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(metricsComponents);
+      for (ComponentMetricLayer layer : layers) {
+          int efferentCoupling = metrics.getEfferentCoupling(layer.getComponentIdentifier());
+          int afferentCoupling = metrics.getAfferentCoupling(layer.getComponentIdentifier());
+          double instability = metrics.getInstability(layer.getComponentIdentifier());
+          ComponentMetric componentMetric = layer.getComponentMetric();
+
+          assertTrue(efferentCoupling <= componentMetric.efferentCoupling(),
+String.format("Слой %s Ce - расчет %s  ожидание %s",
+                          layer.getPackageName(), efferentCoupling, componentMetric.efferentCoupling()));
+          assertTrue(afferentCoupling >= componentMetric.afferentCoupling(),
+String.format("Слой %s Ca -  расчет %s  ожидание %s",
+                          layer.getPackageName(), afferentCoupling, componentMetric.afferentCoupling()));
+          assertTrue(instability <= componentMetric.instability(),
+String.format("Слой %s I - Ce / (Ca + Ce) - расчет %s  ожидание %s",
+                          layer.getPackageName(), instability, componentMetric.instability()));
+      }
+  }
+```
+### Пример проверки метрик связности компонентов
+```java
+  @Test
+  @DisplayName("Проверка метрик связности компонентов")
+  void componentDependencyMetricsTest() {
+      List<ComponentMetricLayer> layers = List.of(ComponentMetricLayers.values());
+      ComponentDependencyMetricsRuleTest.execute(IMPORT_PACKAGES, IMPORT_PACKAGES, layers);
+  }
+
+    @Getter
+    @RequiredArgsConstructor
+    enum ComponentMetricLayers implements ComponentMetricLayer {
+        ACL("acl", new ComponentMetric(2,1,0.67)),
+        CONFIGURATION("configuration", new ComponentMetric(0,0,1)),
+        CONTROLLER("controller", new ComponentMetric(2,0,1)),
+        DAO("dao", new ComponentMetric(1,2,0.34)),
+        MODEL("model", new ComponentMetric(0,5,0)),
+        MODEL_ENUMERATION("model.enumeration", new ComponentMetric(0,0,0)),
+        MODEL_GAME("model.game", new ComponentMetric(0,0,0)),
+        MODEL_MESSAGE("model.message", new ComponentMetric(0,0,0)),
+        REPOSITORY("repository", new ComponentMetric(2,1,0.67)),
+        SERVICE("service", new ComponentMetric(3,1,0.75));
+         ...
+        }
+    }
+```
