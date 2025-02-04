@@ -963,3 +963,105 @@ ClassesShouldConjunction conjunction = classes()
 conjunction.check(javaClasses);
 ```
 ![asd](generated-diagrams/uml_real.svg)
+
+Пимер PlantUml файла
+
+```
+@startuml
+skinparam componentStyle uml2
+skinparam component {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+[controller] --> [model]
+[controller] --> [service]
+
+[service] --> [model]
+[service] --> [acl]
+[service] --> [repository]
+
+[repository] --> [dao]
+
+[acl] --> [model]
+[acl] --> [dao]
+
+@enduml
+```
+
+##  Используем бибиотеку 
+
+### Проверка, что все публичные методы в указанном пакете должны использовать указанный список аннотаций  
+```java
+    public static void execute(String packagePath, String resideInAPackage, Class<? extends Annotation> annotation) {
+
+        JavaClasses importedClasses = new ClassFileImporter()
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                .importPackages(packagePath);
+
+
+        ArchRule rule = ArchRuleDefinition.methods().that().arePublic()
+                .and().areDeclaredInClassesThat().resideInAPackage(resideInAPackage)
+                .should()
+                .beAnnotatedWith(annotation);
+
+        rule.check(importedClasses);
+    }
+```
+### Пример в слое CONTROLLER все публичные методы используют аннотацию @MessageMapping
+```java
+  @Test
+  @DisplayName("Проверка во всех классах в пакете controller на методах должна стоять аннотация MessageMapping")
+  void annotationMessageMappingTest() {
+      AnnotationsForAllPublicMethodsToClassRuleTest.execute(IMPORT_PACKAGES,
+    Layer.CONTROLLER.getPackageName(), MessageMapping.class);
+  }
+```
+
+### Проверка взаимосвязей между слоями 
+```java
+public static void execute(String packagePath, Map<ParamLayer, List<ParamLayer>> layerBeAccessedByLayers) {
+
+      JavaClasses importedClasses = new ClassFileImporter()
+              .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+              .importPackages(packagePath);
+      Architectures.LayeredArchitecture layeredArchitecture = Architectures.layeredArchitecture().consideringAllDependencies();
+      for(ParamLayer layer: layerBeAccessedByLayers.keySet()) {
+          layeredArchitecture = layeredArchitecture.layer(layer.getName()).definedBy(layer.getPackageName());
+      }
+
+      for(Map.Entry<ParamLayer, List<ParamLayer>> entry: layerBeAccessedByLayers.entrySet()) {
+          List<ParamLayer> layers =  entry.getValue();
+          if(layers == null || layers.isEmpty()) {
+              layeredArchitecture = layeredArchitecture.whereLayer(entry.getKey().getName()).mayNotBeAccessedByAnyLayer();
+          } else {
+              String[] names = layers.stream().map(ParamLayer::getName).toList().toArray(new String[0]);
+              layeredArchitecture = layeredArchitecture.whereLayer(entry.getKey().getName()).mayOnlyBeAccessedByLayers(names);
+          }
+
+      }
+      layeredArchitecture.check(importedClasses);
+
+    }
+```
+### Пример проверки  многослойной архитектуры
+```java
+    @Test
+    @DisplayName("Проверка слоев")
+    void layeredTest() {
+        Map<ParamLayer, List<ParamLayer>> layerBeAccessedByLayers = Map.of(
+                Layer.ACL, List.of(Layer.SERVICE, Layer.MODEL_ENUMERATION),
+                Layer.CONFIGURATION, List.of(),
+                Layer.CONTROLLER, List.of(),
+                Layer.DAO, List.of(Layer.REPOSITORY, Layer.ACL),
+                Layer.MODEL, List.of(Layer.SERVICE, Layer.ACL,Layer.DAO, Layer.CONTROLLER, Layer.REPOSITORY),
+                Layer.MODEL_ENUMERATION, List.of(Layer.DAO, Layer.MODEL, Layer.MODEL_MESSAGE,
+                Layer.REPOSITORY, Layer.SERVICE, Layer.ACL),
+                Layer.MODEL_GAME, List.of(Layer.SERVICE, Layer.ACL),
+                Layer.MODEL_MESSAGE, List.of(Layer.CONTROLLER, Layer.SERVICE),
+                Layer.REPOSITORY, List.of(Layer.SERVICE),
+                Layer.SERVICE, List.of(Layer.CONTROLLER));
+         LayeredRuleTest.execute(IMPORT_PACKAGES,layerBeAccessedByLayers);
+    }
+```
+
