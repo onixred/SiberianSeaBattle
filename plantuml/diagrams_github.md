@@ -885,15 +885,13 @@ Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.sea.battl
 MetricsComponents<JavaClass> components = MetricsComponents.fromPackages(subpackages);
 ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(components);
 
-int efferentCoupling = metrics.getEfferentCoupling(Layer.ACL.getComponentIdentifier());
-assertTrue(efferentCoupling <= 2, 
+int efferentCoupling = metrics.getEfferentCoupling("ru.cbr.siberian.sea.battle.acl");
+assertTrue(efferentCoupling == 2, 
            "Ce - показывает зависимости пакета от внешних пакетов" + efferentCoupling);
-
-int afferentCoupling = metrics.getAfferentCoupling(Layer.ACL.getComponentIdentifier());
-assertTrue(afferentCoupling <= 1, 
+int afferentCoupling = metrics.getAfferentCoupling("ru.cbr.siberian.sea.battle.acl");
+assertTrue(afferentCoupling == 1, 
            "Ca - показывает зависимости внешних пакетов от указанного пакета" + afferentCoupling);
-
-double instability = metrics.getInstability(Layer.ACL.getComponentIdentifier());
+double instability = metrics.getInstability("ru.cbr.siberian.sea.battle.acl"));
 assertTrue(instability <= 0.7, 
            "I - Ce / (Ca + Ce), (нестабильность)" + instability);
 ```
@@ -1117,5 +1115,51 @@ String.format("Слой %s I - Ce / (Ca + Ce) - расчет %s  ожидани�
         SERVICE("service", new ComponentMetric(3,1,0.75));
          ...
         }
+    }
+```
+
+### Проверка, что все классы которые в пакете PackageName должны заканчиваются согласно правилу RuleNameEnding
+
+```java
+  public static void execute(String packagePath, RuleParamLayer layer) {
+
+      JavaClasses importedClasses = new ClassFileImporter()
+              .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+              .importPackages(packagePath);
+
+      ArchRule rule = ArchRuleDefinition.classes().that().areNotAnonymousClasses().and()
+              .resideInAnyPackage(layer.getPackageName())
+              .should()
+              .haveNameMatching(layer.getRuleNameEnding());
+
+      rule.check(importedClasses);
+    }
+```
+
+### Пример проверки метрик связности компонентов
+```java
+    @ParameterizedTest
+    @DisplayName("Проверка именований классов в пакетах")
+    @EnumSource(value = Layer.class)
+    void shouldFollowNamingConventionTest(Layer layer) {
+            NamingConventionInPackageRuleTest.execute(IMPORT_PACKAGES, layer);
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum Layer implements ParamLayer, RuleParamLayer {
+        ACL("acl",".*Mapper"),
+        CONFIGURATION("configuration",".*Configuration"),
+        CONTROLLER("controller",".*Controller"),
+        DAO("dao",".*Dao"),
+        MODEL("model",".*"),
+        MODEL_ENUMERATION("model.enumeration",".*Status|.*Type.*"),
+        MODEL_GAME("model.game",".*"),
+        MODEL_MESSAGE("model.message",".*Message.*|.*MatchUI"),
+        REPOSITORY("repository",".*Repository"),
+        SERVICE("service",".*Service");
+    
+        private final String name;
+        private final String ruleNameEnding;
     }
 ```
