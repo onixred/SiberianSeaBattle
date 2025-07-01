@@ -885,15 +885,13 @@ Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.sea.battl
 MetricsComponents<JavaClass> components = MetricsComponents.fromPackages(subpackages);
 ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(components);
 
-int efferentCoupling = metrics.getEfferentCoupling(Layer.ACL.getComponentIdentifier());
-assertTrue(efferentCoupling <= 2, 
+int efferentCoupling = metrics.getEfferentCoupling("ru.cbr.siberian.sea.battle.acl");
+assertTrue(efferentCoupling == 2, 
            "Ce - показывает зависимости пакета от внешних пакетов" + efferentCoupling);
-
-int afferentCoupling = metrics.getAfferentCoupling(Layer.ACL.getComponentIdentifier());
-assertTrue(afferentCoupling <= 1, 
+int afferentCoupling = metrics.getAfferentCoupling("ru.cbr.siberian.sea.battle.acl");
+assertTrue(afferentCoupling == 1, 
            "Ca - показывает зависимости внешних пакетов от указанного пакета" + afferentCoupling);
-
-double instability = metrics.getInstability(Layer.ACL.getComponentIdentifier());
+double instability = metrics.getInstability("ru.cbr.siberian.sea.battle.acl"));
 assertTrue(instability <= 0.7, 
            "I - Ce / (Ca + Ce), (нестабильность)" + instability);
 ```
@@ -963,3 +961,205 @@ ClassesShouldConjunction conjunction = classes()
 conjunction.check(javaClasses);
 ```
 ![asd](generated-diagrams/uml_real.svg)
+
+Пимер PlantUml файла
+
+```
+@startuml
+skinparam componentStyle uml2
+skinparam component {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+[controller] --> [model]
+[controller] --> [service]
+
+[service] --> [model]
+[service] --> [acl]
+[service] --> [repository]
+
+[repository] --> [dao]
+
+[acl] --> [model]
+[acl] --> [dao]
+
+@enduml
+```
+
+##  Используем бибиотеку 
+
+### Проверка, что все публичные методы в указанном пакете должны использовать указанный список аннотаций  
+```java
+    public static void execute(String packagePath, String resideInAPackage, Class<? extends Annotation> annotation) {
+
+        JavaClasses importedClasses = new ClassFileImporter()
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                .importPackages(packagePath);
+
+
+        ArchRule rule = ArchRuleDefinition.methods().that().arePublic()
+                .and().areDeclaredInClassesThat().resideInAPackage(resideInAPackage)
+                .should()
+                .beAnnotatedWith(annotation);
+
+        rule.check(importedClasses);
+    }
+```
+### Пример в слое CONTROLLER все публичные методы используют аннотацию @MessageMapping
+```java
+  @Test
+  @DisplayName("Проверка во всех классах в пакете controller на методах должна стоять аннотация MessageMapping")
+  void annotationMessageMappingTest() {
+      AnnotationsForAllPublicMethodsToClassRuleTest.execute(IMPORT_PACKAGES,
+    Layer.CONTROLLER.getPackageName(), MessageMapping.class);
+  }
+```
+
+### Проверка взаимосвязей между слоями 
+```java
+public static void execute(String packagePath, Map<ParamLayer, List<ParamLayer>> layerBeAccessedByLayers) {
+
+      JavaClasses importedClasses = new ClassFileImporter()
+              .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+              .importPackages(packagePath);
+      Architectures.LayeredArchitecture layeredArchitecture = Architectures.layeredArchitecture().consideringAllDependencies();
+      for(ParamLayer layer: layerBeAccessedByLayers.keySet()) {
+          layeredArchitecture = layeredArchitecture.layer(layer.getName()).definedBy(layer.getPackageName());
+      }
+
+      for(Map.Entry<ParamLayer, List<ParamLayer>> entry: layerBeAccessedByLayers.entrySet()) {
+          List<ParamLayer> layers =  entry.getValue();
+          if(layers == null || layers.isEmpty()) {
+              layeredArchitecture = layeredArchitecture.whereLayer(entry.getKey().getName()).mayNotBeAccessedByAnyLayer();
+          } else {
+              String[] names = layers.stream().map(ParamLayer::getName).toList().toArray(new String[0]);
+              layeredArchitecture = layeredArchitecture.whereLayer(entry.getKey().getName()).mayOnlyBeAccessedByLayers(names);
+          }
+
+      }
+      layeredArchitecture.check(importedClasses);
+
+    }
+```
+### Пример проверки  многослойной архитектуры
+```java
+    @Test
+    @DisplayName("Проверка слоев")
+    void layeredTest() {
+        Map<ParamLayer, List<ParamLayer>> layerBeAccessedByLayers = Map.of(
+                Layer.ACL, List.of(Layer.SERVICE, Layer.MODEL_ENUMERATION),
+                Layer.CONFIGURATION, List.of(),
+                Layer.CONTROLLER, List.of(),
+                Layer.DAO, List.of(Layer.REPOSITORY, Layer.ACL),
+                Layer.MODEL, List.of(Layer.SERVICE, Layer.ACL,Layer.DAO, Layer.CONTROLLER, Layer.REPOSITORY),
+                Layer.MODEL_ENUMERATION, List.of(Layer.DAO, Layer.MODEL, Layer.MODEL_MESSAGE,
+                Layer.REPOSITORY, Layer.SERVICE, Layer.ACL),
+                Layer.MODEL_GAME, List.of(Layer.SERVICE, Layer.ACL),
+                Layer.MODEL_MESSAGE, List.of(Layer.CONTROLLER, Layer.SERVICE),
+                Layer.REPOSITORY, List.of(Layer.SERVICE),
+                Layer.SERVICE, List.of(Layer.CONTROLLER));
+         LayeredRuleTest.execute(IMPORT_PACKAGES,layerBeAccessedByLayers);
+    }
+```
+
+### Проверка метрик связности компонентов
+```java
+ public static void execute(String packagePath, String packageName, List<ComponentMetricLayer> layers) {
+      JavaClasses importedClasses = new ClassFileImporter()
+              .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+              .importPackages(packagePath);
+      Set<JavaPackage> subpackages = importedClasses.getPackage(packageName).getSubpackages();
+      MetricsComponents<JavaClass> metricsComponents = MetricsComponents.fromPackages(subpackages);
+
+      ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(metricsComponents);
+      for (ComponentMetricLayer layer : layers) {
+          int efferentCoupling = metrics.getEfferentCoupling(layer.getComponentIdentifier());
+          int afferentCoupling = metrics.getAfferentCoupling(layer.getComponentIdentifier());
+          double instability = metrics.getInstability(layer.getComponentIdentifier());
+          ComponentMetric componentMetric = layer.getComponentMetric();
+
+          assertTrue(efferentCoupling <= componentMetric.efferentCoupling(),
+String.format("Слой %s Ce - расчет %s  ожидание %s",
+                          layer.getPackageName(), efferentCoupling, componentMetric.efferentCoupling()));
+          assertTrue(afferentCoupling >= componentMetric.afferentCoupling(),
+String.format("Слой %s Ca -  расчет %s  ожидание %s",
+                          layer.getPackageName(), afferentCoupling, componentMetric.afferentCoupling()));
+          assertTrue(instability <= componentMetric.instability(),
+String.format("Слой %s I - Ce / (Ca + Ce) - расчет %s  ожидание %s",
+                          layer.getPackageName(), instability, componentMetric.instability()));
+      }
+  }
+```
+### Пример проверки метрик связности компонентов
+```java
+  @Test
+  @DisplayName("Проверка метрик связности компонентов")
+  void componentDependencyMetricsTest() {
+      List<ComponentMetricLayer> layers = List.of(ComponentMetricLayers.values());
+      ComponentDependencyMetricsRuleTest.execute(IMPORT_PACKAGES, IMPORT_PACKAGES, layers);
+  }
+
+    @Getter
+    @RequiredArgsConstructor
+    enum ComponentMetricLayers implements ComponentMetricLayer {
+        ACL("acl", new ComponentMetric(2,1,0.67)),
+        CONFIGURATION("configuration", new ComponentMetric(0,0,1)),
+        CONTROLLER("controller", new ComponentMetric(2,0,1)),
+        DAO("dao", new ComponentMetric(1,2,0.34)),
+        MODEL("model", new ComponentMetric(0,5,0)),
+        MODEL_ENUMERATION("model.enumeration", new ComponentMetric(0,0,0)),
+        MODEL_GAME("model.game", new ComponentMetric(0,0,0)),
+        MODEL_MESSAGE("model.message", new ComponentMetric(0,0,0)),
+        REPOSITORY("repository", new ComponentMetric(2,1,0.67)),
+        SERVICE("service", new ComponentMetric(3,1,0.75));
+         ...
+        }
+    }
+```
+
+### Проверка, что все классы которые в пакете PackageName должны заканчиваются согласно правилу RuleNameEnding
+
+```java
+  public static void execute(String packagePath, RuleParamLayer layer) {
+
+      JavaClasses importedClasses = new ClassFileImporter()
+              .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+              .importPackages(packagePath);
+
+      ArchRule rule = ArchRuleDefinition.classes().that().areNotAnonymousClasses().and()
+              .resideInAnyPackage(layer.getPackageName())
+              .should()
+              .haveNameMatching(layer.getRuleNameEnding());
+
+      rule.check(importedClasses);
+    }
+```
+
+### Пример проверки метрик связности компонентов
+```java
+    @ParameterizedTest
+    @DisplayName("Проверка именований классов в пакетах")
+    @EnumSource(value = Layer.class)
+    void shouldFollowNamingConventionTest(Layer layer) {
+            NamingConventionInPackageRuleTest.execute(IMPORT_PACKAGES, layer);
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum Layer implements ParamLayer, RuleParamLayer {
+        ACL("acl",".*Mapper"),
+        CONFIGURATION("configuration",".*Configuration"),
+        CONTROLLER("controller",".*Controller"),
+        DAO("dao",".*Dao"),
+        MODEL("model",".*"),
+        MODEL_ENUMERATION("model.enumeration",".*Status|.*Type.*"),
+        MODEL_GAME("model.game",".*"),
+        MODEL_MESSAGE("model.message",".*Message.*|.*MatchUI"),
+        REPOSITORY("repository",".*Repository"),
+        SERVICE("service",".*Service");
+    
+        private final String name;
+        private final String ruleNameEnding;
+    }
+```
