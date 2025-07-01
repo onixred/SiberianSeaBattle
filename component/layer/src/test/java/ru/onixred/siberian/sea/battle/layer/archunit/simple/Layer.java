@@ -17,8 +17,9 @@ package ru.onixred.siberian.sea.battle.layer.archunit.simple;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import ru.onixred.siberian.sea.battle.core.rule.ParamLayer;
-import ru.onixred.siberian.sea.battle.core.rule.RuleParamLayer;
+import ru.onixred.arch.unit.helper.rule.ParamLayer;
+import ru.onixred.arch.unit.helper.rule.RuleParamLayer;
+
 
 /**
  * Description:

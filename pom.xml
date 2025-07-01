@@ -10,7 +10,6 @@
 	<description>Game Sea Battle</description>
 
 	<modules>
-		<module>component/core</module>
 		<module>component/feature</module>
 		<module>component/layer</module>
 
