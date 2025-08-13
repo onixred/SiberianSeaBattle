@@ -391,6 +391,67 @@ note right on link #crimson: Комбинация создает цикл
 @enduml
 ```
 
+
+
+```
+@startuml onlyAllowedDependenciesInServicePackageTest
+hide empty members
+set separator none
+skinparam componentStyle uml2
+
+skinparam component {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+skinparam class {
+  BorderColor #grey
+  BackgroundColor #white
+}
+
+package ru.cbr.siberian.sea.battle.acl {
+    class MatchMapper
+}
+
+package ru.cbr.siberian.sea.battle.configuration {
+    class WebSocketConfiguration
+}
+
+package ru.cbr.siberian.sea.battle.controller {
+    class GameController
+}
+
+package ru.cbr.siberian.sea.battle.dao {
+    class MatchDao
+}
+
+package ru.cbr.siberian.sea.battle.model {
+    class Match
+}
+
+package ru.cbr.siberian.sea.battle.repository {
+    interface MatchRepository
+}
+
+package ru.cbr.siberian.sea.battle.service {
+    class MatchService
+    class SeaBattleService
+}
+
+GameController -down-> SeaBattleService #green
+
+MatchService -down-> MatchMapper #green
+MatchService -down-> MatchRepository #green
+MatchRepository -down-> MatchDao #green
+MatchMapper -down-> MatchDao #green
+MatchMapper -down-> Match #green
+MatchMapper --> SeaBattleService #crimson
+note right on link #crimson: Комбинация создает цикл
+
+@enduml
+```
+
+
 ```
 @startuml lakosMetricsTest
 skinparam componentStyle uml2
@@ -823,6 +884,37 @@ SliceRule sliceRule = slices()
         .beFreeOfCycles();
 sliceRule.check(javaClasses);
 ```
+
+### Проверка внешних библиотек
+![asd](../../../target/onlyAllowedDependenciesInServicePackageTest.svg)
+```java
+    @Test
+    @DisplayName("Классы в пакете DAO не должны напрямую зависеть от 'других' внешних библиотек")
+    void onlyAllowedDependenciesInServicePackageTest() {
+
+        JavaClasses javaClasses = new ClassFileImporter()
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                .importPackages(IMPORT_PACKAGES);
+
+        ArchRule rule = classes().that()
+                .resideInAPackage("ru.onixred.siberian.sea.battle.layer.dao..")
+                .should()
+                .onlyDependOnClassesThat()
+                .resideInAnyPackage("java..",
+                        "ru.onixred.siberian..",
+                        "lombok..",
+                        "jakarta.persistence..",
+                        "org.hibernate.proxy.."
+                ) // Allowed dependency
+                .as("Classes in the DAO package should not depend on external 'other' libraries directly");
+
+        rule.check(javaClasses);
+    }
+}
+```
+
+
+
 
 ###  Проверка метрик Джона Лакоса на примере layer-first
 ![asd](../../../target/generated-diagrams/lakosMetricsTest.svg)

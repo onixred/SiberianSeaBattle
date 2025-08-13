@@ -101,5 +101,29 @@ public class PackageDependencyTest {
                         Layer.REPOSITORY.getPackageName());
         rule.check(javaClasses);
     }
+
+
+    @Test
+    @DisplayName("Классы в пакете DAO не должны напрямую зависеть от 'других' внешних библиотек")
+    void onlyAllowedDependenciesInServicePackageTest() {
+
+        JavaClasses javaClasses = new ClassFileImporter()
+                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                .importPackages(IMPORT_PACKAGES);
+
+        ArchRule rule = classes().that()
+                .resideInAPackage("ru.onixred.siberian.sea.battle.layer.dao..")
+                .should()
+                .onlyDependOnClassesThat()
+                .resideInAnyPackage("java..",
+                        "ru.onixred.siberian..",
+                        "lombok..",
+                        "jakarta.persistence..",
+                        "org.hibernate.proxy.."
+                ) // Allowed dependency
+                .as("Classes in the DAO package should not depend on external 'other' libraries directly");
+
+        rule.check(javaClasses);
+    }
 }
 
