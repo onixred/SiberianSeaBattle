@@ -117,12 +117,12 @@ BorderColor #grey
 BackgroundColor #white
 }
 
-package ru.cbr.siberian.sea.battle.acl {
+package ru.onixred.siberian.sea.battle.layer.acl {
 class MatchMapper
 class GameMapper
 }
 
-package ru.cbr.siberian.sea.battle.service {
+package ru.onixred.siberian.sea.battle.layer.service {
 class MatchService
 }
 
@@ -147,7 +147,7 @@ BorderColor #grey
 BackgroundColor #white
 }
 
-package ru.cbr.siberian.sea.battle.acl {
+package ru.onixred.siberian.sea.battle.layer.acl {
 class MatchMapper
 class GameMapper
 class AclService
@@ -295,24 +295,24 @@ skinparam class {
   BackgroundColor #white
 }
 
-package ru.cbr.siberian.sea.battle.configuration {
+package ru.onixred.siberian.sea.battle.layer.configuration {
     class WebSocketConfiguration
 }
 
-package ru.cbr.siberian.sea.battle.acl {
+package ru.onixred.siberian.sea.battle.layer.acl {
     class MatchMapper
 
 }
 
-package ru.cbr.siberian.sea.battle.controller {
+package ru.onixred.siberian.sea.battle.layer.controller {
     class GameController
 }
 
-package ru.cbr.siberian.sea.battle.repository {
+package ru.onixred.siberian.sea.battle.layer.repository {
     interface MatchRepository
 }
 
-package ru.cbr.siberian.sea.battle.service {
+package ru.onixred.siberian.sea.battle.layer.service {
     class MatchService
     class SeaBattleService
 }
@@ -349,31 +349,31 @@ skinparam class {
   BackgroundColor #white
 }
 
-package ru.cbr.siberian.sea.battle.acl {
+package ru.onixred.siberian.sea.battle.layer.acl {
     class MatchMapper
 }
 
-package ru.cbr.siberian.sea.battle.configuration {
+package ru.onixred.siberian.sea.battle.layer.configuration {
     class WebSocketConfiguration
 }
 
-package ru.cbr.siberian.sea.battle.controller {
+package ru.onixred.siberian.sea.battle.layer.controller {
     class GameController
 }
 
-package ru.cbr.siberian.sea.battle.dao {
+package ru.onixred.siberian.sea.battle.layer.dao {
     class MatchDao
 }
 
-package ru.cbr.siberian.sea.battle.model {
+package ru.onixred.siberian.sea.battle.layer.model {
     class Match
 }
 
-package ru.cbr.siberian.sea.battle.repository {
+package ru.onixred.siberian.sea.battle.layer.repository {
     interface MatchRepository
 }
 
-package ru.cbr.siberian.sea.battle.service {
+package ru.onixred.siberian.sea.battle.layer.service {
     class MatchService
     class SeaBattleService
 }
@@ -408,31 +408,31 @@ skinparam class {
   BackgroundColor #white
 }
 
-package ru.cbr.siberian.sea.battle.acl {
+package ru.onixred.siberian.sea.battle.layer.acl {
     class MatchMapper
 }
 
-package ru.cbr.siberian.sea.battle.configuration {
+package ru.onixred.siberian.sea.battle.layer.configuration {
     class WebSocketConfiguration
 }
 
-package ru.cbr.siberian.sea.battle.controller {
+package ru.onixred.siberian.sea.battle.layer.controller {
     class GameController
 }
 
-package ru.cbr.siberian.sea.battle.dao {
+package ru.onixred.siberian.sea.battle.layer.dao {
     class MatchDao
 }
 
-package ru.cbr.siberian.sea.battle.model {
+package ru.onixred.siberian.sea.battle.layer.model {
     class Match
 }
 
-package ru.cbr.siberian.sea.battle.repository {
+package ru.onixred.siberian.sea.battle.layer.repository {
     interface MatchRepository
 }
 
-package ru.cbr.siberian.sea.battle.service {
+package ru.onixred.siberian.sea.battle.layer.service {
     class MatchService
     class SeaBattleService
 }
@@ -462,13 +462,13 @@ skinparam legend {
   BackgroundColor #lightyellow
 }
 
-[Component ru.cbr.siberian.sea.battle.acl\nDependsOn: 3] as acl
-[Component ru.cbr.siberian.sea.battle.configuration\nDependsOn: 1] as configuration
-[Component ru.cbr.siberian.sea.battle.controller\nDependsOn: 7] as controller
-[Component ru.cbr.siberian.sea.battle.dao\nDependsOn: 1] as dao
-[Component ru.cbr.siberian.sea.battle.model\nDependsOn: 1] as model
-[Component ru.cbr.siberian.sea.battle.repository\nDependsOn: 2] as repository
-[Component ru.cbr.siberian.sea.battle.service\nDependsOn: 6] as service
+[Component ru.onixred.siberian.sea.battle.layer.acl\nDependsOn: 3] as acl
+[Component ru.onixred.siberian.sea.battle.layer.configuration\nDependsOn: 1] as configuration
+[Component ru.onixred.siberian.sea.battle.layer.controller\nDependsOn: 7] as controller
+[Component ru.onixred.siberian.sea.battle.layer.dao\nDependsOn: 1] as dao
+[Component ru.onixred.siberian.sea.battle.layer.model\nDependsOn: 1] as model
+[Component ru.onixred.siberian.sea.battle.layer.repository\nDependsOn: 2] as repository
+[Component ru.onixred.siberian.sea.battle.layer.service\nDependsOn: 6] as service
 
 
 controller --> service
@@ -540,13 +540,13 @@ skinparam legend {
   BackgroundColor #lightyellow
 }
 
-[Component ru.cbr.siberian.sea.battle.acl \nCe: 2\nCa: 1\nI: 0.66] as acl
-[Component ru.cbr.siberian.sea.battle.configuration \nCe: 0\nCa: 0\nI: 1] as configuration
-[Component ru.cbr.siberian.sea.battle.controller \nCe: 2\nCa: 0\nI: 1] as controller
-[Component ru.cbr.siberian.sea.battle.dao \nCe: 1\nCa: 2\nI: 0.33] as dao
-[Component ru.cbr.siberian.sea.battle.model \nCe: 0\nCa: 5\nI: 0] as model
-[Component ru.cbr.siberian.sea.battle.repository \nCe: 2\nCa: 1\nI: 0.66] as repository
-[Component ru.cbr.siberian.sea.battle.service \nCe: 3\nCa: 1\nI: 0.75] as service
+[Component ru.onixred.siberian.sea.battle.layer.acl \nCe: 2\nCa: 1\nI: 0.66] as acl
+[Component ru.onixred.siberian.sea.battle.layer.configuration \nCe: 0\nCa: 0\nI: 1] as configuration
+[Component ru.onixred.siberian.sea.battle.layer.controller \nCe: 2\nCa: 0\nI: 1] as controller
+[Component ru.onixred.siberian.sea.battle.layer.dao \nCe: 1\nCa: 2\nI: 0.33] as dao
+[Component ru.onixred.siberian.sea.battle.layer.model \nCe: 0\nCa: 5\nI: 0] as model
+[Component ru.onixred.siberian.sea.battle.layer.repository \nCe: 2\nCa: 1\nI: 0.66] as repository
+[Component ru.onixred.siberian.sea.battle.layer.service \nCe: 3\nCa: 1\nI: 0.75] as service
 
 
 controller --> service
@@ -571,12 +571,12 @@ skinparam legend {
 }
 
 
-[Component feature.first.sea.battle.game \nCe: 0\nCa: 1\nI: 0] as game
-[Component feature.first.sea.battle.match \nCe: 4\nCa: 0\nI:1] as match
-[Component feature.first.sea.battle.player \nCe: 2\nCa: 1\nI: 0.66] as player
-[Component feature.first.sea.battle.common \nCe: 0\nCa: 3\nI: 0] as common
-[Component feature.first.sea.battle.configuration \nCe: 0\nCa: 0\nI: 1] as configuration
-[Component feature.first.sea.battle.notification \nCe: 1\nCa: 2\nI: 0.33] as notification
+[Component ru.onixred.siberian.sea.battle.feature.game \nCe: 0\nCa: 1\nI: 0] as game
+[Component ru.onixred.siberian.sea.battle.feature.match \nCe: 4\nCa: 0\nI:1] as match
+[Component ru.onixred.siberian.sea.battle.feature.player \nCe: 2\nCa: 1\nI: 0.66] as player
+[Component ru.onixred.siberian.sea.battle.feature.common \nCe: 0\nCa: 3\nI: 0] as common
+[Component ru.onixred.siberian.sea.battle.feature.configuration \nCe: 0\nCa: 0\nI: 1] as configuration
+[Component ru.onixred.siberian.sea.battle.feature.notification \nCe: 1\nCa: 2\nI: 0.33] as notification
 
 
 notification --> common
@@ -621,24 +621,24 @@ end note
 ```
 @startuml uml
 
-interface ru.cbr.siberian.sea.battle.repository.MatchRepository {
+interface ru.onixred.siberian.sea.battle.layer.repository.MatchRepository {
 }
 
-ru.cbr.siberian.sea.battle.controller.GameController *--  ru.cbr.siberian.sea.battle.service.SeaBattleService : seaBattleService
-ru.cbr.siberian.sea.battle.service.SeaBattleService *--  ru.cbr.siberian.sea.battle.service.MatchService : matchService
-ru.cbr.siberian.sea.battle.service.SeaBattleService *--  ru.cbr.siberian.sea.battle.service.GameService : gameService
+ru.onixred.siberian.sea.battle.layer.controller.GameController *--  ru.onixred.siberian.sea.battle.layer.service.SeaBattleService : seaBattleService
+ru.onixred.siberian.sea.battle.layer.service.SeaBattleService *--  ru.onixred.siberian.sea.battle.layer.service.MatchService : matchService
+ru.onixred.siberian.sea.battle.layer.service.SeaBattleService *--  ru.onixred.siberian.sea.battle.layer.service.GameService : gameService
 
 
 
-ru.cbr.siberian.sea.battle.service.GameService *--  ru.cbr.siberian.sea.battle.model.game.WarshipDescription : warshipDescriptionsForMini
-ru.cbr.siberian.sea.battle.service.GameService *--  ru.cbr.siberian.sea.battle.model.game.WarshipDescription : warshipDescriptionsForRegular
-ru.cbr.siberian.sea.battle.service.GameService *--  ru.cbr.siberian.sea.battle.acl.GameMapper : gameMapper
+ru.onixred.siberian.sea.battle.layer.service.GameService *--  ru.onixred.siberian.sea.battle.layer.model.game.WarshipDescription : warshipDescriptionsForMini
+ru.onixred.siberian.sea.battle.layer.service.GameService *--  ru.onixred.siberian.sea.battle.layer.model.game.WarshipDescription : warshipDescriptionsForRegular
+ru.onixred.siberian.sea.battle.layer.service.GameService *--  ru.onixred.siberian.sea.battle.layer.acl.GameMapper : gameMapper
 
-ru.cbr.siberian.sea.battle.service.MatchService *--  ru.cbr.siberian.sea.battle.repository.MatchRepository : matchRepository
-ru.cbr.siberian.sea.battle.service.MatchService *--  ru.cbr.siberian.sea.battle.acl.MatchMapper : matchMapper
-ru.cbr.siberian.sea.battle.acl.MatchMapper -- ru.cbr.siberian.sea.battle.dao.MatchDao: link
-ru.cbr.siberian.sea.battle.acl.MatchMapper -- ru.cbr.siberian.sea.battle.model.Match: link
-ru.cbr.siberian.sea.battle.repository.MatchRepository --  ru.cbr.siberian.sea.battle.dao.MatchDao : link
+ru.onixred.siberian.sea.battle.layer.service.MatchService *--  ru.onixred.siberian.sea.battle.layer.repository.MatchRepository : matchRepository
+ru.onixred.siberian.sea.battle.layer.service.MatchService *--  ru.onixred.siberian.sea.battle.layer.acl.MatchMapper : matchMapper
+ru.onixred.siberian.sea.battle.layer.acl.MatchMapper -- ru.onixred.siberian.sea.battle.layer.dao.MatchDao: link
+ru.onixred.siberian.sea.battle.layer.acl.MatchMapper -- ru.onixred.siberian.sea.battle.layer.model.Match: link
+ru.onixred.siberian.sea.battle.layer.repository.MatchRepository --  ru.onixred.siberian.sea.battle.layer.dao.MatchDao : link
 
 @enduml
 ```
@@ -652,12 +652,12 @@ BorderColor #grey
 BackgroundColor #white
 }
 
-[controller] <<..ru.cbr.siberian.sea.battle.controller..>>
-[dao] <<..ru.cbr.siberian.sea.battle.dao..>>
-[model] <<..ru.cbr.siberian.sea.battle.model..>>
-[service] <<..ru.cbr.siberian.sea.battle.service..>>
-[acl] <<..ru.cbr.siberian.sea.battle.acl..>>
-[repository] <<..cbr.siberian.sea.battle.repository..>>
+[controller] <<..ru.onixred.siberian.sea.battle.layer.controller..>>
+[dao] <<..ru.onixred.siberian.sea.battle.layer.dao..>>
+[model] <<..ru.onixred.siberian.sea.battle.layer.model..>>
+[service] <<..ru.onixred.siberian.sea.battle.layer.service..>>
+[acl] <<..ru.onixred.siberian.sea.battle.layer.acl..>>
+[repository] <<..ru.onixred.siberian.sea.battle.layer.repository..>>
 
 [controller] --> [model]
 [controller] --> [service]
@@ -697,7 +697,7 @@ BackgroundColor #white
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle");
 ArchRule rule = noClasses().that().resideInAPackage(Layer.ACL.getPackageName())
         .should()
         .dependOnClassesThat()
@@ -717,7 +717,7 @@ rule.check(javaClasses);
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle");
 ArchRule rule = classes().that().resideInAPackage(Layer.ACL.getPackageName())
         .should()
         .dependOnClassesThat()
@@ -731,7 +731,7 @@ rule.check(javaClasses);
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle");
 ArchRule rule = classes().that().resideInAPackage(Layer.ACL.getPackageName())
         .should()
         .onlyHaveDependentClassesThat()
@@ -746,7 +746,7 @@ rule.check(javaClasses);
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle");
 ArchRule rule = noClasses().that().resideInAPackage(Layer.ACL.getPackageName())
         .should()
         .onlyHaveDependentClassesThat()
@@ -765,7 +765,7 @@ ArchRule rule = noClasses().that().resideInAPackage(Layer.ACL.getPackageName())
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle");
 ArchRule rule = classes().that().haveNameMatching(MatchMapper.class.getName())
         .should()
         .onlyHaveDependentClassesThat().haveNameMatching(MatchService.class.getName());
@@ -779,7 +779,7 @@ rule.check(javaClasses);
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle");
 
 ArchRule rule = classes().that().haveSimpleNameEndingWith("Mapper")
         .should()
@@ -793,9 +793,9 @@ rule.check(javaClasses);
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle");
 ArchRule rule = classes().that()
-        .resideInAnyPackage(Layer.ACL.getComponentIdentifier("ru.cbr.siberian.sea.battle"))
+        .resideInAnyPackage(Layer.ACL.getComponentIdentifier("ru.onixred.siberian.sea.battle"))
         .should()
         .haveSimpleNameEndingWith("Mapper");
 
@@ -808,7 +808,7 @@ rule.check(javaClasses);
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle");
 ArchRule rule = classes().that().implement(BaseRequestMessage.class)
         .should().haveSimpleNameEndingWith("RequestMessage");
 
@@ -820,7 +820,7 @@ rule.check(javaClasses);
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle");
 ArchRule rule = classes().that().areAssignableTo(BaseRequestMessage.class)
         .should().onlyAccessFieldsThat(are(annotatedWith(NotBlank.class))
         .or(annotatedWith(NotNull.class)));
@@ -834,7 +834,7 @@ rule.check(javaClasses);
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle");
 ArchRule rule = noFields().should()
         .beAnnotatedWith(Autowired.class);
 
@@ -846,7 +846,7 @@ rule.check(javaClasses);
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle");
 ArchRule rule = noConstructors().that().areDeclaredInClassesThat()
         .areAssignableTo(Match.class)
         .should().onlyBeCalled().byClassesThat()
@@ -861,15 +861,15 @@ rule.check(javaClasses);
 
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle");
 
 Architectures.LayeredArchitecture layeredArchitecture = layeredArchitecture()
         .consideringAllDependencies()
-        .layer("acl").definedBy("ru.cbr.siberian.sea.battle.acl..")
-        .layer("configuration").definedBy("ru.cbr.siberian.sea.battle.configuration..")
-        .layer("controller").definedBy("ru.cbr.siberian.sea.battle.controller..")
-        .layer("repository").definedBy("ru.cbr.siberian.sea.battle.repository..")
-        .layer("service").definedBy("ru.cbr.siberian.sea.battle.service..")
+        .layer("acl").definedBy("ru.onixred.siberian.sea.battle.layer.acl..")
+        .layer("configuration").definedBy("ru.onixred.siberian.sea.battle.layer.configuration..")
+        .layer("controller").definedBy("ru.onixred.siberian.sea.battle.layer.controller..")
+        .layer("repository").definedBy("ru.onixred.siberian.sea.battle.layer.repository..")
+        .layer("service").definedBy("ru.onixred.siberian.sea.battle.layer.service..")
 
         .whereLayer("acl").mayOnlyBeAccessedByLayers("service")
         .whereLayer("configuration").mayNotBeAccessedByAnyLayer()
@@ -884,9 +884,9 @@ layeredArchitecture.check(javaClasses);
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle");
 SliceRule sliceRule = slices()
-        .matching("ru.cbr.siberian.sea.battle.(*)..")
+        .matching("ru.onixred.siberian.sea.battle.(*)..")
         .should()
         .beFreeOfCycles();
 sliceRule.check(javaClasses);
@@ -927,9 +927,9 @@ sliceRule.check(javaClasses);
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle.layer");
 
-Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.sea.battle")
+Set<JavaPackage> subpackages = javaClasses.getPackage("ru.onixred.siberian.sea.battle.layer")
         .getSubpackages();
 MetricsComponents<JavaClass> components = MetricsComponents.fromPackages(subpackages);
 LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(components);
@@ -945,9 +945,9 @@ assertTrue(metrics.getAverageComponentDependency() <= 3,
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.feature.first.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle.feature");
 
-Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.feature.first.sea.battle")
+Set<JavaPackage> subpackages = javaClasses.getPackage("ru.onixred.siberian.sea.battle.feature")
         .getSubpackages();
 MetricsComponents<JavaClass> components = MetricsComponents.fromPackages(subpackages);
 LakosMetrics metrics = ArchitectureMetrics.lakosMetrics(components);
@@ -968,20 +968,20 @@ https://habr.com/ru/articles/772802/
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle");
 
-Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.sea.battle")
+Set<JavaPackage> subpackages = javaClasses.getPackage("ru.onixred.siberian.sea.battle")
         .getSubpackages();
 MetricsComponents<JavaClass> components = MetricsComponents.fromPackages(subpackages);
 ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(components);
 
-int efferentCoupling = metrics.getEfferentCoupling("ru.cbr.siberian.sea.battle.acl");
+int efferentCoupling = metrics.getEfferentCoupling("ru.onixred.siberian.sea.battle.layer.acl");
 assertTrue(efferentCoupling == 2, 
            "Ce - показывает зависимости пакета от внешних пакетов" + efferentCoupling);
-int afferentCoupling = metrics.getAfferentCoupling("ru.cbr.siberian.sea.battle.acl");
+int afferentCoupling = metrics.getAfferentCoupling("ru.onixred.siberian.sea.battle.layer.acl");
 assertTrue(afferentCoupling == 1, 
            "Ca - показывает зависимости внешних пакетов от указанного пакета" + afferentCoupling);
-double instability = metrics.getInstability("ru.cbr.siberian.sea.battle.acl"));
+double instability = metrics.getInstability("ru.onixred.siberian.sea.battle.layer.acl"));
 assertTrue(instability <= 0.7, 
            "I - Ce / (Ca + Ce), (нестабильность)" + instability);
 ```
@@ -994,9 +994,9 @@ assertTrue(instability <= 0.7,
 ```java
 JavaClasses javaClasses = new ClassFileImporter()
         .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-        .importPackages("ru.cbr.siberian.feature.first.sea.battle");
+        .importPackages("ru.onixred.siberian.sea.battle.feature");
 
-Set<JavaPackage> subpackages = javaClasses.getPackage("ru.cbr.siberian.feature.first.sea.battle")
+Set<JavaPackage> subpackages = javaClasses.getPackage("ru.onixred.siberian.sea.battle.feature")
         .getSubpackages();
 MetricsComponents<JavaClass> components = MetricsComponents.fromPackages(subpackages);
 ComponentDependencyMetrics metrics = ArchitectureMetrics.componentDependencyMetrics(components);
@@ -1023,7 +1023,7 @@ assertTrue(instability <= 0,
 @Test
 @DisplayName("Проверка во всех классах в пакете controller на методах должна стоять аннотация PreAuthorize")
 void annotationPreAuthorizeTest() {
-    String importPackages = "ru.cbr.siberian.sea.battle";
+    String importPackages = "ru.onixred.siberian.sea.battle.layer";
     JavaClasses importedClasses = new ClassFileImporter()
             .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
             .importPackages(importPackages);
@@ -1052,7 +1052,7 @@ conjunction.check(javaClasses);
 ```
 ![asd](generated-diagrams/uml_real.svg)
 
-Пимер PlantUml файла
+Пример PlantUml файла
 
 ```
 @startuml

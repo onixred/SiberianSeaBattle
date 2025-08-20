@@ -8,12 +8,12 @@ skinparam component {
   BackgroundColor #white
 }
 
-[controller] <<..ru.cbr.siberian.sea.battle.controller..>>
-[dao] <<..ru.cbr.siberian.sea.battle.dao..>>
-[model] <<..ru.cbr.siberian.sea.battle.model..>>
-[service] <<..ru.cbr.siberian.sea.battle.service..>>
-[acl] <<..ru.cbr.siberian.sea.battle.acl..>>
-[repository] <<..cbr.siberian.sea.battle.repository..>>
+[controller] <<..ru.onixred.siberian.sea.battle.layer.controller..>>
+[dao] <<..ru.onixred.siberian.sea.battle.layer.dao..>>
+[model] <<..ru.onixred.siberian.sea.battle.layer.model..>>
+[service] <<..ru.onixred.siberian.sea.battle.layer.service..>>
+[acl] <<..ru.onixred.siberian.sea.battle.layer.acl..>>
+[repository] <<..ru.onixred.siberian.sea.battle.layer.repository..>>
 
 [controller] --> [model]
 [controller] --> [service]
