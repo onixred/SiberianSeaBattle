@@ -399,53 +399,39 @@ set separator none
 skinparam componentStyle uml2
 
 skinparam component {
-  BorderColor #grey
-  BackgroundColor #white
+BorderColor #grey
+BackgroundColor #white
 }
 
 skinparam class {
-  BorderColor #grey
-  BackgroundColor #white
+BorderColor #grey
+BackgroundColor #white
 }
 
-package ru.onixred.siberian.sea.battle.layer.acl {
-    class MatchMapper
+
+
+package ru.cbr.siberian.sea.battle.layer.dao {
+class MatchDao
 }
 
-package ru.onixred.siberian.sea.battle.layer.configuration {
-    class WebSocketConfiguration
+package jakarta.persistence {
+interface Entity
+
 }
 
-package ru.onixred.siberian.sea.battle.layer.controller {
-    class GameController
+package org.hibernate.proxy {
+interface HibernateProxy
+
 }
 
-package ru.onixred.siberian.sea.battle.layer.dao {
-    class MatchDao
+package org.postgresql {
+interface Driver
 }
 
-package ru.onixred.siberian.sea.battle.layer.model {
-    class Match
-}
-
-package ru.onixred.siberian.sea.battle.layer.repository {
-    interface MatchRepository
-}
-
-package ru.onixred.siberian.sea.battle.layer.service {
-    class MatchService
-    class SeaBattleService
-}
-
-GameController -down-> SeaBattleService #green
-
-MatchService -down-> MatchMapper #green
-MatchService -down-> MatchRepository #green
-MatchRepository -down-> MatchDao #green
-MatchMapper -down-> MatchDao #green
-MatchMapper -down-> Match #green
-MatchMapper --> SeaBattleService #crimson
-note right on link #crimson: Комбинация создает цикл
+MatchDao -down-> Entity #green
+MatchDao -down-> HibernateProxy #green
+MatchDao -down-> Driver #crimson
+note right on link #crimson: Класс не из списка разрешенных
 
 @enduml
 ```
