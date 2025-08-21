@@ -410,7 +410,7 @@ BackgroundColor #white
 
 
 
-package ru.cbr.siberian.sea.battle.dao {
+package ru.cbr.siberian.sea.battle.layer.dao {
 class MatchDao
 }
 
